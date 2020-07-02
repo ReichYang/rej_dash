@@ -1,0 +1,1541 @@
+From 1661976740306949050@xxx Mon Mar 23 17:28:51 +0000 2020
+X-GM-THRID: 1661976740306949050
+X-Gmail-Labels: Inbox,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:f8ca:0:0:0:0:0 with SMTP id n10csp4071785ivp;
+        Mon, 23 Mar 2020 10:28:52 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vs3mrI98ACqelKPxMi+JyDe+f0kfHW4ETxU/DqNMXjzDfvMTMkMsTLQocW7gEmuVgvtiBKM
+X-Received: by 2002:ac8:7288:: with SMTP id v8mr7364967qto.31.1584984531865;
+        Mon, 23 Mar 2020 10:28:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1584984531; cv=none;
+        d=google.com; s=arc-20160816;
+        b=YPRySxuODOr2ApZ65crySlaiYj0rozwmGFwvZcuDLlgxOcGKWaQd5vDu1hfDHL3ghS
+         lrQtrhMaiuVYoBeQdnGghHTcPHAiLkPTwtm7YKqyti0+Rjq7EB7XBSl4f8SXQFKd35aL
+         +COwkVRY0uh5aUxMAV+l4QQf+gczWp9O+Rx5+xSbAqCogzO3MQjWTpQhQkR522dKoMN4
+         9DwLhDS63i/l7PjT6ZbkX4VfYWqLGWO/R8j+lpCApGWIUm6PnUb7fn/MzA7hZd3msuW3
+         p2lZ91ktK0ovQ+z/qhEQTgGFIVGKaUAZyAxjYxtQ5yofOHCOouHB/JqL+u7wdmnsWSiQ
+         XF8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:date:dkim-signature
+         :dkim-signature;
+        bh=vI/eknlrd0/ven/gVU9OE+F5Z0YpVp1oR5+IPXBS/8k=;
+        b=aiXRwWqzHg+mSKS8wgfmEqgbAQlNbeo4O8BDISf7XZsaEgNTsgNEy6OKEmQDK+oD4L
+         hFCQiARlE5ihtiyN1M76wPMK4svuVVzZWQ+UuYpkvlwmTv5iu5ZvTWzZ+IjK831jwsY6
+         XfqloLpupTbe1yGp3O7NiqmAO9yUEejnDGI5ZKG0PMQLE7zhXgfhhPjjyt+QzSJS09lX
+         QkhIghQo+LqnSsBxkOZZKss2mzvn2Oz0ArT+pYE0Amg7t+xdXHj9P1mTDOJ++0hSb8gT
+         JirkHv1ZGxNe+i1G5tqb87Z4qqnNm0EQm2+FhweQPg3MQcNok7UMWN94+q4+kcyrTmmp
+         Sgrw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@pinterest.com header.s=smtp header.b=lPzL8sio;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=0WL5OHH7;
+       spf=pass (google.com: domain of no-reply@pinterest.com designates 146.20.191.233 as permitted sender) smtp.mailfrom=no-reply@pinterest.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=pinterest.com
+Return-Path: <no-reply@pinterest.com>
+Received: from mail-191.233.greenhouse.io (mail-191.233.greenhouse.io. [146.20.191.233])
+        by mx.google.com with UTF8SMTPS id h5si705027qtp.374.2020.03.23.10.28.50
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Mar 2020 10:28:51 -0700 (PDT)
+Received-SPF: pass (google.com: domain of no-reply@pinterest.com designates 146.20.191.233 as permitted sender) client-ip=146.20.191.233;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@pinterest.com header.s=smtp header.b=lPzL8sio;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=0WL5OHH7;
+       spf=pass (google.com: domain of no-reply@pinterest.com designates 146.20.191.233 as permitted sender) smtp.mailfrom=no-reply@pinterest.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=pinterest.com
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=pinterest.com; q=dns/txt;
+ s=smtp; t=1584984531; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Date: X-Feedback-Id;
+ bh=vI/eknlrd0/ven/gVU9OE+F5Z0YpVp1oR5+IPXBS/8k=; b=lPzL8siosFcY96DM7mRHao5Pn/KRIVYc0GSl7lOIHoRNEoPPVGW9IEQuEBgvEF1/odYR7m+I
+ 6HbS/83eF0ZOu/fScd2atz1g2MQEEoqKeoJnjalqt2oL/jTYlyyjU9ShrKNV30xVfqT/8bui
+ byhaYz15p6sT+IsfRNesuYPHHzw=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1584984531; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Date: X-Feedback-Id;
+ bh=vI/eknlrd0/ven/gVU9OE+F5Z0YpVp1oR5+IPXBS/8k=; b=0WL5OHH7b3a2D44Fpx5uUaGJkeR1Xit3WvKq5xH8UTOjJdMFWWAkLK8VSiva28rbCX8yV7VN
+ dam/gI/zorvhoS2mI8BSo9SSvT+yhiXqZSJCSMtyJbtUWY/Y1osB9L76Jr0R59JF3t+ToDYA
+ 6WX7gWUTYnjyjrTG3hOR3fH9uss=
+X-Feedback-Id: 531132c93867746215752853:mailgun
+X-Mailgun-Sending-Ip: 146.20.191.233
+X-Mailgun-Sid: WyIxNDVkYiIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgIjNlMjliIl0=
+Received: by luna.mailgun.net with HTTP; Mon, 23 Mar 2020 17:28:50 +0000
+Date: Mon, 23 Mar 2020 17:28:50 +0000
+Message-Id: <20200323172850.1.17058F803A628327@pinterest.com>
+X-Mailgun-Tag: ScheduledCandidateEmail
+X-Mailgun-Native-Send: true
+To: yyk002016@gmail.com
+From: no-reply@pinterest.com
+Subject: Your application for People Research Scientist at Pinterest
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="b8e2a21dd50b4d3b999352af1dc55518"
+
+--b8e2a21dd50b4d3b999352af1dc55518
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+
+Hi Yukun,
+
+Thank you so much for your interest in Pinterest. We know that it takes tim=
+e and energy to submit for a new role. Our recruiting team carefully review=
+ed your background and experience and, unfortunately, we won=E2=80=99t be m=
+oving forward with your application at this time.
+
+We do encourage you to keep an eye on ourCareers page ( https://careers.pin=
+terest.com/ ) for roles that may be a better match in the future. Thank you=
+ again for taking the time to apply!
+
+Sincerely,
+
+Pinterest=E2=80=99s Recruiting Team
+--b8e2a21dd50b4d3b999352af1dc55518
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+<p><span style="font-weight: 400;">Hi Yukun,</span></p>
+<p><span style="font-weight: 400;">Thank you so much for your interest in Pinterest. We know that it takes time and energy to submit for a new role. Our recruiting team carefully reviewed your background and experience and, unfortunately, we won&rsquo;t be moving forward with your application at this time.&nbsp;</span></p>
+<p><span style="font-weight: 400;">We do encourage you to keep an eye on our</span><a href="https://careers.pinterest.com/"> <span style="font-weight: 400;">Careers page</span></a><span style="font-weight: 400;"> for roles that may be a better match in the future. Thank you again for taking the time to apply!</span></p>
+<p><span style="font-weight: 400;">Sincerely,</span></p>
+<p><span style="font-weight: 400;">Pinterest&rsquo;s Recruiting Team</span></p>
+--b8e2a21dd50b4d3b999352af1dc55518--
+
+From 1666232860100988076@xxx Sat May 09 16:58:03 +0000 2020
+X-GM-THRID: 1666232860100988076
+X-Gmail-Labels: Archived,Important,Opened,Category Personal,Starred,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:fb0e:0:0:0:0:0 with SMTP id r14csp580474ivd;
+        Sat, 9 May 2020 09:58:04 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJ9feDn9TPFlHGicp4/LsFrq/AFIrQOZs+C074DgAQk5vVxS7VajoGIFRL5VEw2We+/X9em
+X-Received: by 2002:a37:6690:: with SMTP id a138mr8283711qkc.152.1589043483957;
+        Sat, 09 May 2020 09:58:03 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1589043483; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=UxOQUn2LcSH+1dvxHE0bDBSmWz8F+6v9yVFZfUwd8LPQER/FyEndZOodOH+p+gc9sL
+         PtBXd+DjKqT5Yfi+YVakk9xYswfFhODXDpPcd9nb7SgxZoYSzCmD6F0Q3G/G1PzCcBmA
+         E1AbsAE01L2zLCe8KWoPc89IOU49MYDCKxKn/SSrj8CrqdATCOGeYhdk5Wbme4jWdTrq
+         uuGfUUPCckyKxHEyH7rJ+atoE7MzlC5Lq7gWac4XZJV3+j2l5IEar7Z/rNrO9fP7wGRm
+         a5cLWLOe562cML94sFw8H3t9Is+ZSKTGKqUCDbPsNBglyvburksMsCr+fQs2FPyLBbPM
+         GsMQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:message-id:date
+         :thread-index:thread-topic:subject:to:from:dkim-signature;
+        bh=UuDgOJpgU1p4Afk/kbtUP1ytf+Yks2MzoDDHX9aKS1M=;
+        b=pVqvk3cCF2FI1jDzDbMu3PhbPdui07Rs4R7l4jX3ARN9cmL0PAr+kikCWrCi1DVXeQ
+         QMgmBzLfl86ur8xBam5oRNM/PGw/Cz51Qbwc2mfqmEvSiaRsV7ghJMqCZBCdybie25h6
+         qaBLFqy/9idvgILCuIsYS9ju/ZLw3zK58qAKTQJRi6bXl6srQwT3UNhqrp7ilYTUha6r
+         y60RvTNmYMgGI2wf4iWfHTGcytN6fq0mgUrKVv1G4BYLERV02yc4x9XjZ1mtZyaNBZXD
+         wRLk3oRkm0fuiGPET9RsdfaxhBxdNyvzf5y9SOZyX/Otv2I6bAd7vRyBZUmuN1MkLEXT
+         gOFQ==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@cerebriai.onmicrosoft.com header.s=selector2-cerebriai-onmicrosoft-com header.b=qgWRr5EE;
+       arc=pass (i=1 spf=pass spfdomain=cerebriai.com dkim=pass dkdomain=cerebriai.com dmarc=pass fromdomain=cerebriai.com);
+       spf=pass (google.com: domain of alain@cerebriai.com designates 40.107.66.41 as permitted sender) smtp.mailfrom=alain@cerebriai.com
+Return-Path: <alain@cerebriai.com>
+Received: from CAN01-QB1-obe.outbound.protection.outlook.com (mail-eopbgr660041.outbound.protection.outlook.com. [40.107.66.41])
+        by mx.google.com with ESMTPS id j21si2919059qke.108.2020.05.09.09.58.03
+        for <yyk002016@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 09 May 2020 09:58:03 -0700 (PDT)
+Received-SPF: pass (google.com: domain of alain@cerebriai.com designates 40.107.66.41 as permitted sender) client-ip=40.107.66.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@cerebriai.onmicrosoft.com header.s=selector2-cerebriai-onmicrosoft-com header.b=qgWRr5EE;
+       arc=pass (i=1 spf=pass spfdomain=cerebriai.com dkim=pass dkdomain=cerebriai.com dmarc=pass fromdomain=cerebriai.com);
+       spf=pass (google.com: domain of alain@cerebriai.com designates 40.107.66.41 as permitted sender) smtp.mailfrom=alain@cerebriai.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mPQsfx591oHPCTmnSzCReDMlq9U04Q0XtLqtIUQG7Nw2qYxfKsOTIwzJUeg1mpTJpESni2gaHFgKxijDhzZdaMFwC/aIF+4zFVa7Q4VA+QjaKQugecXuoaHSXMFAvvj1YuPpEwq4v5sY7tGgAxqjD+R9hSqAFLZnYFUVR2DuMp/sjxAAshDTx2K8LIaI9HApZnlt8adejrzHlXMspp3QZ1ZJV1JdcRMAghNNoEusJduFxmYeU8WTN6UzkwhX4kZ5v6n3RugD6X8aNSt3Is7dwHM2n119Lb6g1qz0U0FodymfPEPBdTVeKKe81D+/VGwIoeW7ah415sAyiDg+65bDVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UuDgOJpgU1p4Afk/kbtUP1ytf+Yks2MzoDDHX9aKS1M=;
+ b=Rs8ffDrx0I07FNr9UosiN63bsWgsLqdUikUPrD6pug83AwGjG+hg2cPbb1x1vW4sjB4wyH7akml6DIeM+cpoaXrsDPveqxsz2eoFsn070v101A+c93v0rzOnnp8tTQ3nGgtKUS+aeQg92GKQcAiS0abcp+X+xfWR/uKuuJL7xURVLtDjW/e4zQGwyc3cT0QEvytdK6LzMgnIQdl4UwKvMrNa22lp/uESpJUFJdy10KFu1gvlEibEPhktMWpcpiJeCUwZVqkGuDz8+S++TohtWfOqt3a+cQzAZKMyrX9pviFddGsxpNtmTQ+2gqLsZhB230NxJpbYkbG0igfjPkXySw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cerebriai.com; dmarc=pass action=none
+ header.from=cerebriai.com; dkim=pass header.d=cerebriai.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cerebriai.onmicrosoft.com; s=selector2-cerebriai-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UuDgOJpgU1p4Afk/kbtUP1ytf+Yks2MzoDDHX9aKS1M=;
+ b=qgWRr5EEjuXEVlJfz8q3Ys8ZLI/dGNp9/WAlSHuAtuohDY1O1h38X7yfZaa65U2CV84pBO0sFEMC0x4Q/NCqx/CSf1ZVHqGGAl8JJoKZwrdii6e2XRT5F6y/MWK+i3nRtxX8V7nU6lmlZQ38fmhUbbatU/YGfMDSlFxiQKCrKl8=
+Received: from YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM (52.132.72.26) by
+ YQBPR0101MB1793.CANPRD01.PROD.OUTLOOK.COM (52.132.67.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2958.19; Sat, 9 May 2020 16:58:02 +0000
+Received: from YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::3572:ccd6:3d22:2182]) by YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::3572:ccd6:3d22:2182%7]) with mapi id 15.20.2958.035; Sat, 9 May 2020
+ 16:58:02 +0000
+From: =?iso-8859-1?Q?Alain_Brian=E7on=2C_PhD?= <alain@cerebriai.com>
+To: "yyk002016@gmail.com" <yyk002016@gmail.com>
+Subject: Cerebri AI
+Thread-Topic: Cerebri AI
+Thread-Index: AQHWJiMAukA1ap7Z60uBUvmZbYUVvA==
+Date: Sat, 9 May 2020 16:58:02 +0000
+Message-ID:
+ <YQBPR0101MB08332D6D4D9C260127C3577BBEA30@YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-lever-msgid: bda7616e-8c78-4e97-8ba0-bf68df8269f9
+x-lever-emailthreadid: c78bae4d-1fb6-4ab9-916e-86557583153e
+x-entity-ref-id: 62124919-8e11-4b5b-9825-b4776ef53376
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=cerebriai.com;
+x-originating-ip: [20.190.128.103]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 45454e56-7502-46e6-00ae-08d7f43a22f7
+x-ms-traffictypediagnostic: YQBPR0101MB1793:
+x-microsoft-antispam-prvs:
+ <YQBPR0101MB1793F04707DDA4DCF75AC32ABEA30@YQBPR0101MB1793.CANPRD01.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 03982FDC1D
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ wU8tuKV7aCWbDr2C4YMTQRNQQhBDcFCWxFI5vImfVGIgc8OC0XWNsNJuTWeQLaZ/2NrMeTePXu/8rHH1ImGQu301BB4DlG2z/A3wzB3CuxKGlLyuLTbulvT6iRtZmmQxGFkXHKRJZj1tnKO1AV0PNJ4rYFvOnpKTbsdnEwJcTjOVoWg8WgU2CjjoHFmtXSDUuP3hdYVc0wxYp0js0LiW+Q44cQ2DARPFq6QTAA8KKiPOb0tlC9I65W+nteYsupDii6/MxQ1Bwj+TPQ0B74n9F8KeBTjOTqTgJFX1L8Chb9N5ItG4tdvYtMAxRZd1TVdJwBGtdI7V0dZ6khkQC+sHu39dDY9WRLccUHBMS5wGOhCfr4mcyHSDLRxqmsulmLpGeMFKuNQSUhnytAr4zrg6a0W7sTz07UD4I9MTz7xKsnkrjjEN0XLhBbFMCBPQ9i8sPX1J7w/VD7jno0HvjUmqW1F1FYWob9Mq3+yWu4zXS3QD6qwbwkR0E9g6yRg1DKvIF9HhQP9puuljq+kakGP7RQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(346002)(396003)(366004)(39830400003)(34036004)(376002)(136003)(33430700001)(76116006)(66556008)(9686003)(66476007)(33440700001)(316002)(7696005)(55016002)(86362001)(8676002)(508600001)(6506007)(8936002)(5660300002)(3480700007)(7116003)(66446008)(64756008)(91956017)(33656002)(66946007)(4744005)(52536014)(26005)(6916009)(2906002)(71200400001)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata:
+ fzkCErsNHDZ+aDRKjQmajSfO96MIVNWLfB56OleMkWzDSs9fCT4UtVOejsW/CS3lNRhOYUQjfbBL/CNC/COTf0Wldet+T/C57UeGucP72W4IHS5ia7UQ4iAvbqM6DndEj8UKP3lAaZBcRnvth92SzsR31mag393wvGma/X9IfpuM5M3qHYCgNZX6ni+UwUOKyulCVV0YBNY/qwDZ/BKka1qGnHR8vKxIuEHvfiwomHw1r3BlOR89KyaCRFXy/Cmt15U3vFDE2tdrW/catQZtDMp4z7Lw4MAvTijzuX73U2S1l9x1eQQ3TMBJ+IjglnQ97NSS3mmZ4xU341d0SUQxBU3mHJgDCtJ6bPlvbOP5Xj5DdtQd7VZs7EYN0G4w7DmtYGfTOTWN+Ns4CcHffcp99Lfq0Wzdr1bqwC73lzEPmv9MeD2H9K+qGzuNE6ZLIeyxP5wncQJJW607dRwYS4WlJj/jL7md9+V60Vl4fUbHvRi5UXKidKMrGnxnM6ensa0F
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/alternative;
+	boundary="_000_YQBPR0101MB08332D6D4D9C260127C3577BBEA30YQBPR0101MB0833_"
+MIME-Version: 1.0
+X-OriginatorOrg: cerebriai.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45454e56-7502-46e6-00ae-08d7f43a22f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2020 16:58:02.7318
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1946d4d7-a78f-4be2-9f20-a92dd66a7f6e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UOT53DUBbM01RlU6bRTQcscUOSyrzO91v3j7ZDyS2UufJ4Kj6ZJJ9OxhT6AtVeDbGNLlwKm8Aplo3ORNyw+TNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQBPR0101MB1793
+
+--_000_YQBPR0101MB08332D6D4D9C260127C3577BBEA30YQBPR0101MB0833_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Yukun,
+
+Thank you for your interest in Cerebri AI. As many businesses, we are re-ev=
+aluating our hiring in view of the COVID-19 situation.
+
+Cerebri AI will not be moving your candidacy forward at this time. If you a=
+re interested, you should reapply in the June timeframe when we hope things=
+ will be back to a normal. We do wish you the best of luck in your professi=
+onal search.
+
+Thank you and stay safe.
+
+Alain Brian=E7on, Ph.D.
+CTO
+e: alain@cerebriai.com
+
+
+--_000_YQBPR0101MB08332D6D4D9C260127C3577BBEA30YQBPR0101MB0833_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+</head>
+<body>
+<div>Dear Yukun,</div>
+<div><br>
+</div>
+<div>Thank you for your interest in Cerebri AI. As many businesses, we are =
+re-evaluating our hiring in view of the COVID-19 situation.</div>
+<div><br>
+</div>
+<div>Cerebri AI will not be moving your candidacy forward at this time. If =
+you are interested, you should reapply in the June timeframe when we hope t=
+hings will be back to a normal. We do wish you the best of luck in your pro=
+fessional search.</div>
+<div><br>
+</div>
+<div>Thank you and stay safe. </div>
+<div><br>
+</div>
+<div>Alain Brian=E7on, Ph.D.</div>
+<div>CTO</div>
+<div><span style=3D"font-size: 12px;">e: alain@cerebriai.com</span></div>
+<div><br>
+</div>
+</body>
+</html>
+
+--_000_YQBPR0101MB08332D6D4D9C260127C3577BBEA30YQBPR0101MB0833_--
+
+From 1665544468367351644@xxx Sat May 02 02:36:22 +0000 2020
+X-GM-THRID: 1665544468367351644
+X-Gmail-Labels: Archived,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:fb0e:0:0:0:0:0 with SMTP id r14csp1200604ivd;
+        Fri, 1 May 2020 19:36:22 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJR1wf/bAwiQKVdLPA/3GfpaYJFdjDHLoucBFN0XtgcQ9T4T7r8+UJWnQMYB2lRo8Qx7UEQ
+X-Received: by 2002:aca:b382:: with SMTP id c124mr1796987oif.64.1588386981957;
+        Fri, 01 May 2020 19:36:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1588386981; cv=none;
+        d=google.com; s=arc-20160816;
+        b=lOU4ni4bTABRnVT8mr9N93rigVinTpKtygUmhmafkiByj41PnVF7w+E3V3gulOdJZg
+         9xDMhPWIz/Q1AwQA9UjJUeG8PYu5OYwIUoPkACheymG2FsREzWsUfqQYe50BPWUVbe9A
+         nsLsWJ2PRRkNl9Aehl/k2tYIY+kAJimMZF9PiqdTRcCSnF6+4gEmCc3D9FAnqBksqxyf
+         SffcHTMq0hIFiQNYJsBB8cTfsRE70/cBqF06X4vzjR6Vclqo4QI/oMsc2AwSn724mv7F
+         /RxGJyVJ8pB3v/2gXBtoz5s7wixdhwyHEsTGbUiCE3kWJ6xdxjJ3AuZPaaZdO+awOBka
+         VYMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:sender:date
+         :content-transfer-encoding:dkim-signature:dkim-signature;
+        bh=VFtIIu8UFIHFU8NxGD2yHEm8Sp53yskFCtlSemntoxg=;
+        b=IWY99DbAo0TDSDxK4butdhFefTNuWz0JfeWZbIJ4XvfsOTulb3DOjUKscm6U98Q622
+         jJ3bEYnvr74CTgUkM3omQJiygKpKDfSsDxeWUSIhmvpnHQbNBp7lQ1wRCOBMt+Zs6C2l
+         rakfqB0gtGUIAw83UTH+IbK8S+13QQys025Gq4VgzF6xcQar36UT6ltIFe+69VQU0CAJ
+         bUT17zNMmyxh5a54wILHmo/GawgBkmsky84GM86t7KXuyBNkjvCvTXDrQvXfpgaj9quU
+         ELcmyE6wuX5zMnmZPdwjxkokpPQLp8HnhwuNejCF9RscIjlXO5C/xyB3aBR+Xm3Xx1pe
+         hhcA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b="km+3/Rti";
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=X4wHewYQ;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+Return-Path: <bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co>
+Received: from rs41.hire.lever.co (rs41.hire.lever.co. [209.61.151.41])
+        by mx.google.com with UTF8SMTPS id l9si2423499otk.22.2020.05.01.19.36.18
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 19:36:21 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) client-ip=209.61.151.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b="km+3/Rti";
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=X4wHewYQ;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=hire.lever.co; q=dns/txt;
+ s=mx; t=1588386981; h=Mime-Version: Content-Type: Subject: From: To:
+ Message-Id: Sender: Date: Content-Transfer-Encoding: X-Feedback-Id;
+ bh=VFtIIu8UFIHFU8NxGD2yHEm8Sp53yskFCtlSemntoxg=; b=km+3/RtimRb3Tiu5V9pJ/jPGrVd/kgYzdN/w3cG/0kaTFLeii1RiYueK/BZ8b+BDJ6/n28Il
+ gfLoYGrIDmq875UtcbrmXbrZ/YcLnQx54vynjKBV+MGpE20YRoez7MT1qhv5rLq/nAHI1UXU
+ scXbY0XWZEA81sUDxT/FYXvg/Dc=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1588386981; h=Mime-Version: Content-Type: Subject: From: To:
+ Message-Id: Sender: Date: Content-Transfer-Encoding: X-Feedback-Id;
+ bh=VFtIIu8UFIHFU8NxGD2yHEm8Sp53yskFCtlSemntoxg=; b=X4wHewYQgCldhY6l0r9MXg0TgUWT/r+KobQ/Fxc6w+IniHw3sI07XJJY/7pAvdQrr0pd9gdC
+ BbyMLzNRDipYFCeWssqZvWVIq62Cp5fUcerE9A5snYXYg+fe79gqteH3tixuGJVQxPfOYLp5
+ HLwb+1zVKlU7k0GQ+QpkSAem70w=
+X-Feedback-Id: 507b4f7b69d7c5503f0297d4:mailgun
+X-Mailgun-Sending-Ip: 209.61.151.41
+X-Mailgun-Sid: WyI5YTAxZCIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgIjA0NDUiXQ==
+Content-Transfer-Encoding: 7bit
+Received: by luna.mailgun.net with HTTP; Sat, 02 May 2020 02:36:03 +0000
+Date: Sat, 02 May 2020 02:36:03 +0000
+Sender: no-reply@hire.lever.co
+Message-Id: <20200502023603.1.1C17262BB0F873A4@hire.lever.co>
+To: yyk002016@gmail.com
+From: Cerebri AI <no-reply@hire.lever.co>
+Subject: Thank you for your application to Cerebri AI
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+<div>Hi Yukun,</div><div><br></div><div>Thank you for your interest in Cerebri AI! We wanted to let you know we received your application for Operations Research (OR) Engineer, and we are delighted that you would consider joining our team.</div><div><br></div><div>Our team will review your application and will be in touch if your qualifications match our needs for the role. If you are not selected for this position, keep an eye on our jobs page as we're growing and adding openings.</div><div><br></div><div>Best,</div><div>The Cerebri AI Team</div>
+
+From 1668339167029302054@xxx Mon Jun 01 22:56:54 +0000 2020
+X-GM-THRID: 1668339167029302054
+X-Gmail-Labels: Archived,Important,Opened,Category Personal,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:b011:0:0:0:0:0 with SMTP id z17csp3174700ive;
+        Mon, 1 Jun 2020 15:56:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3MpwZ9UEvsaSfgT9cBxXnLiJnhOW1QEKnWG+x2t81466qftDqyx6bOLeqnc+CaWvpAqrB
+X-Received: by 2002:a37:8e85:: with SMTP id q127mr17530968qkd.105.1591052214297;
+        Mon, 01 Jun 2020 15:56:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1591052214; cv=none;
+        d=google.com; s=arc-20160816;
+        b=wauPE1fpYz1J5CmP35w1VCqTqB5/AYQpFa1cigSNoDmYgqfgYibrRfz3K63bz/IF5s
+         avDA6FEyEpTpFQTEngRcCQ4NjPL/bpolWQDg9ZPfvuMdxKjmtvlwIGSz/wg+aSDJ/Qs0
+         Jr6t79smYa7nrSRHcwlxJp2Fwpx7Cd1A/FYvGfiTdGTXIRgrJnQtp4WEgdPWCXgAnEHQ
+         j7tP/2N3T1Ff4vxVkSANsbTr3+v3UbSDDUmSSFEtmqnyrwxnX8wf07ZjXGPdEYZx6sMO
+         4DjuG7T6UDE8shaTU4Tm6X0MWbxjCbdwbVJ7T+QaKDAzywud9Ux2Ku5cstvdRT4m4xBN
+         5ojg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:subject:date:to:from:mime-version:dkim-signature;
+        bh=7kBGSAqK8MXSqFWU30VJe3bRbgAU/cm64l7oUs9LOeY=;
+        b=e+U907+5arOmzaj56b5wNUg5QCLFb0bka5JQ/YuTngDrzFcGdINaivt2mlNSmYAGlx
+         Uy2AaPjJp72OUHkOs+ttL0fYpak31Tg7gFUR3QGwniubfyp6XL3zwJsIZU3nKpFEGQMJ
+         FtwTO2/4gan/CYzrKCMeG9d9DyDD6qMvyNe0FWufNNY8zQtqZdFR2C5W8E/eq1f7kZmD
+         dwnxDqujCk7frjN/cn7A77Cs0RRwXhw2vI8tdGRrlj+2hccRouDxTtcoXx/BDZNiXq2o
+         5apbIwc3b4PKIMuXZzCNS4xmxM2Z+rNBFhO7f59NUpP1YSRulGAbnxoOtNW9dwadUqH5
+         y/1w==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ultipro.com header.s=Dec2016 header.b=pwpKcQuz;
+       spf=permerror (google.com: permanent error in processing during lookup of tracilyn.price@cotiviti.com: 394315.spf07.hubspotemail.net~all not found) smtp.mailfrom=Tracilyn.Price@cotiviti.com;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=cotiviti.com
+Return-Path: <Tracilyn.Price@cotiviti.com>
+Received: from ultipro.com (secmail.ultipro.com. [208.86.168.7])
+        by mx.google.com with ESMTPS id j9si396528qvu.93.2020.06.01.15.56.53
+        for <yyk002016@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Jun 2020 15:56:54 -0700 (PDT)
+Received-SPF: permerror (google.com: permanent error in processing during lookup of tracilyn.price@cotiviti.com: 394315.spf07.hubspotemail.net~all not found) client-ip=208.86.168.7;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ultipro.com header.s=Dec2016 header.b=pwpKcQuz;
+       spf=permerror (google.com: permanent error in processing during lookup of tracilyn.price@cotiviti.com: 394315.spf07.hubspotemail.net~all not found) smtp.mailfrom=Tracilyn.Price@cotiviti.com;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=cotiviti.com
+Received: from pps.filterd (e0mprfap06.us.saas [127.0.0.1])
+	by e0mprfap06.us.saas (8.16.0.42/8.16.0.42) with SMTP id 051M0E1T003955
+	for <yyk002016@gmail.com>; Mon, 1 Jun 2020 18:56:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ultipro.com; h=mime-version : from
+ : to : date : subject : content-type : message-id; s=Dec2016;
+ bh=7kBGSAqK8MXSqFWU30VJe3bRbgAU/cm64l7oUs9LOeY=;
+ b=pwpKcQuzCrfzYaGgBm7H8XgcBckAkZ+aH5TIy3GfSTDJ9ePLuC2spdwxCWqBF877nSxf
+ U+waAoxhEl6NhnYxdNxV4/Wua80YfCQPttf82A9YKifYiucjYFb7uEo5bWYVZsF4Wbst
+ GmDrSQ6/HbhWuzeHyR3GR6y0UOSJg5SMxaQwpIZDUWEcqe9OO3v0mQiJ6tqI6qDNWxzL
+ FRTkMtGa3QTB00UhKiYjpEYq5F0UlNfLLtz4YlodhX6n5fw9zZY4Hu88i4cgvtRlCPWE
+ 8zGOXOvELDBfT2GDL5UpkxFbmJ8mL3UllrPc7JpW4B0dZah7UPzEHTOW5j2Z13orqlBM Dw== 
+Received: from rec-prod-atl-77 ([10.99.228.1])
+	by e0mprfap06.us.saas with ESMTP id 31bjtq1yst-1
+	for <yyk002016@gmail.com>; Mon, 01 Jun 2020 18:56:53 -0400
+MIME-Version: 1.0
+From: Tracilyn.Price@cotiviti.com
+To: "yyk002016@gmail.com" <yyk002016@gmail.com>
+Date: 1 Jun 2020 22:56:53 +0000
+Subject: Application for Data Scientist I at Cotiviti
+Content-Type: multipart/alternative;
+ boundary=--boundary_70077_7d382c2a-9771-4bfb-81c0-f38dda508875
+Message-ID: <31bjtq1yst-1@e0mprfap06.us.saas>
+
+
+----boundary_70077_7d382c2a-9771-4bfb-81c0-f38dda508875
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+
+RGVhciBZdWt1biwKVGhhbmsgeW91IGZvciB5b3VyIGFwcGxpY2F0aW9uIGFuZCBpbnRl
+cmVzdCBpbiBDb3Rpdml0aS4KCldlIHdhbnRlZCB0byBsZXQgeW91IGtub3cgdGhhdCB3
+ZSBoYXZlIHJlY2VudGx5IGZpbGxlZCB0aGUgRGF0YSBTY2llbnRpc3QgSSBwb3NpdGlv
+biB5b3UgYXBwbGllZCB0by4gIFdlIHdlcmUgZm9ydHVuYXRlIHRvIHJlY2VpdmUgYSBo
+aWdoIGxldmVsIG9mIGludGVyZXN0IGluIHRoZSBvcHBvcnR1bml0eSwgYW5kIGhhdmUg
+Zm91bmQgYSBjYW5kaWRhdGUgd2hvIGNsb3NlbHkgbWF0Y2hlcyBvdXIgbmVlZHMuICAK
+CldlIHdpbGwgY2VydGFpbmx5IGtlZXAgeW91ciByZXN1bWUgYWN0aXZlIGluIG91ciBk
+YXRhYmFzZSBmb3IgZnV0dXJlIGNvbnNpZGVyYXRpb24sIGFuZCBlbmNvdXJhZ2UgeW91
+IHRvIGtlZXAgYW4gZXllIG9uIG91ciB3ZWJzaXRlIHRvIHZpZXcgb3RoZXIgb3Blbmlu
+Z3MgdGhhdCBtaWdodCBtZWV0IHlvdXIgcXVhbGlmaWNhdGlvbnMgYW5kIGludGVyZXN0
+cy4gUGxlYXNlIG5vdGUgeW91IGNhbiBzZXQgdXAgYSBqb2Igc2VhcmNoIGFnZW50IHRv
+IGJlIG5vdGlmaWVkIG9mIG5ldyBwb3NpdGlvbnMgdGhhdCBtYXRjaCB5b3VyIHNwZWNp
+ZmljYXRpb25zLgpodHRwczovL3JlY3J1aXRpbmcudWx0aXByby5jb20vVkVSMTAxMlZF
+UkhJL0pvYkJvYXJkLzdlMTM2ZmQxLTRhOTQtMGUyZC0xMWZhLTZjMThmMjE3YzA2ZgpB
+Z2FpbiwgdGhhbmsgeW91IGZvciB5b3VyIGludGVyZXN0IGFuZCB3ZSB3aXNoIHlvdSB0
+aGUgYmVzdCBpbiB5b3VyIGNhcmVlciBhc3BpcmF0aW9ucy4KClNpbmNlcmVseSwKQ290
+aXZpdGkgVGFsZW50IEFjcXVpc2l0aW9uIFRlYW0=
+----boundary_70077_7d382c2a-9771-4bfb-81c0-f38dda508875
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: base64
+
+PGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRpdj4KPGRp
+dj4KPGRpdj4KPHA+RGVhciZuYnNwO1l1a3VuLDwvcD4KPHA+VGhhbmsgeW91IGZvciB5
+b3VyIGFwcGxpY2F0aW9uIGFuZCBpbnRlcmVzdCBpbiBDb3Rpdml0aS48YnIgLz48YnIg
+Lz5XZSB3YW50ZWQgdG8gbGV0IHlvdSBrbm93IHRoYXQgd2UgaGF2ZSByZWNlbnRseSBm
+aWxsZWQmbmJzcDt0aGUgRGF0YSBTY2llbnRpc3QgSSBwb3NpdGlvbiB5b3UgYXBwbGll
+ZCB0by4gJm5ic3A7V2Ugd2VyZSBmb3J0dW5hdGUgdG8gcmVjZWl2ZSZuYnNwO2EgaGln
+aCBsZXZlbCBvZiBpbnRlcmVzdCBpbiB0aGUgb3Bwb3J0dW5pdHksIGFuZCBoYXZlIGZv
+dW5kIGEgY2FuZGlkYXRlIHdobyBjbG9zZWx5IG1hdGNoZXMgb3VyIG5lZWRzLiAmbmJz
+cDs8YnIgLz48YnIgLz5XZSB3aWxsIGNlcnRhaW5seSZuYnNwO2tlZXAgeW91ciByZXN1
+bWUgYWN0aXZlIGluIG91ciBkYXRhYmFzZSBmb3IgZnV0dXJlIGNvbnNpZGVyYXRpb24s
+IGFuZCBlbmNvdXJhZ2UgeW91IHRvIGtlZXAgYW4gZXllIG9uJm5ic3A7b3VyIHdlYnNp
+dGUgdG8gdmlldyZuYnNwO290aGVyIG9wZW5pbmdzIHRoYXQgbWlnaHQgbWVldCB5b3Vy
+IHF1YWxpZmljYXRpb25zIGFuZCBpbnRlcmVzdHMuIFBsZWFzZSBub3RlIHlvdSBjYW4g
+c2V0IHVwIGEgam9iIHNlYXJjaCBhZ2VudCB0byBiZSBub3RpZmllZCBvZiBuZXcgcG9z
+aXRpb25zIHRoYXQmbmJzcDttYXRjaCB5b3VyIHNwZWNpZmljYXRpb25zLjxiciAvPjxh
+IGRhdGEtYXV0b21hdGlvbj0iYXBwbGljYXRpb24tbGluayIgaHJlZj0iaHR0cHM6Ly9y
+ZWNydWl0aW5nLnVsdGlwcm8uY29tL1ZFUjEwMTJWRVJISS9Kb2JCb2FyZC83ZTEzNmZk
+MS00YTk0LTBlMmQtMTFmYS02YzE4ZjIxN2MwNmYiPmh0dHBzOi8vcmVjcnVpdGluZy51
+bHRpcHJvLmNvbS9WRVIxMDEyVkVSSEkvSm9iQm9hcmQvN2UxMzZmZDEtNGE5NC0wZTJk
+LTExZmEtNmMxOGYyMTdjMDZmPC9hPjwvcD4KPHA+QWdhaW4sIHRoYW5rIHlvdSBmb3Ig
+eW91ciBpbnRlcmVzdCBhbmQgd2Ugd2lzaCB5b3UgdGhlIGJlc3QgaW4geW91ciBjYXJl
+ZXIgYXNwaXJhdGlvbnMuPGJyIC8+PGJyIC8+U2luY2VyZWx5LDxiciAvPkNvdGl2aXRp
+IFRhbGVudCBBY3F1aXNpdGlvbiBUZWFtPC9wPgo8L2Rpdj4KPC9kaXY+CjwvZGl2Pgo8
+L2Rpdj4KPC9kaXY+CjwvZGl2Pgo8L2Rpdj4KPC9kaXY+CjwvZGl2Pgo8L2Rpdj4=
+----boundary_70077_7d382c2a-9771-4bfb-81c0-f38dda508875--
+
+
+
+From 1663629914273338276@xxx Fri Apr 10 23:25:21 +0000 2020
+X-GM-THRID: 1663629914273338276
+X-Gmail-Labels: Inbox,Important,Opened,Category Promotions,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:f588:0:0:0:0:0 with SMTP id l8csp1119188ivo;
+        Fri, 10 Apr 2020 16:25:21 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJ0fal3eXoW5nG0U2nNsE+qjMdglDiXZVP6L24AgVQQ4VNS9rp499+LXH0WYmxbl72YCeqW
+X-Received: by 2002:a05:6808:256:: with SMTP id m22mr4837237oie.48.1586561121267;
+        Fri, 10 Apr 2020 16:25:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1586561121; cv=none;
+        d=google.com; s=arc-20160816;
+        b=O083DFOZr1vHTaCex4uhbxzrQCxTUXarNXD3BzG0sfzKqcVGXpOrZRAklSPeWrKxH0
+         FB3V4UKhlr9Zdang6gXOgrs6na9Q/AUcTPAmG2wyTm0Hz5XtowN6n0zDDHMzYTNstfdw
+         YgJYLpPyI4yCwDEjAMGsk6L/RR8yCex7X8beUWAANnxPk1y0cYv7houRKX1gjF/3NVUM
+         Zq9fZD018edSryMAjOMLKz5tVkKHmEzrndxIFaATlqdejZCi1uxwKlXZuzlTM2ouzTfB
+         JQM0pXvB/wRd7AsMyT1OAyt3wUrdGNOWmvovXIGsQ5crM3LXugBpInUKrJvcHsexd99s
+         BRiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:sender:date:dkim-signature
+         :dkim-signature;
+        bh=njR/kWcntuvd/Fsq2Rg++Be/Croa+AmS3xCtKO7ZLOM=;
+        b=f9cgkzc7nzTir50/Mh06XPRBRJp0v0b5O9lBQZVb0/xaOuFbkL0UdWM59pgeW3Cpxk
+         oU+CvO3pA86609vgIbYG76CMjwZvrx8dMdzx0B0IW0ZRSZcpXrKfKFlNjxZgXy4Q/wBz
+         Czn6rU7rcEP8tyJPkGShd58Z02afONRcDvcQDjjoLS/D5I8sXi5kZMAo1JxOcbPi+gq4
+         AEuvCuGiN0HQRKmFtNdZ/mPFjzVE2JfG4XGLsGXRPg/Taq3AvZ9A71sdN/Fh/6DGXEAZ
+         2FM4+pevNCTCmRDiS5gQozPD+Fdkaj2w0OtlNc2nT/Uu/U9N3BVaUojvMw8ezIkjoXuP
+         eaDw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b=ZQ3Mpf9G;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=bFObIf6+;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+Return-Path: <bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co>
+Received: from rs41.hire.lever.co (rs41.hire.lever.co. [209.61.151.41])
+        by mx.google.com with UTF8SMTPS id w7si1522875otj.223.2020.04.10.16.25.18
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 16:25:21 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) client-ip=209.61.151.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b=ZQ3Mpf9G;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=bFObIf6+;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=hire.lever.co; q=dns/txt;
+ s=mx; t=1586561121; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Sender: Date: X-Feedback-Id;
+ bh=njR/kWcntuvd/Fsq2Rg++Be/Croa+AmS3xCtKO7ZLOM=; b=ZQ3Mpf9GJ3VBuoP3odFXMU/Ummp42Z68iaQVlZc2mp8VZwhs9tvzvwkLRNDAP+M5RYvm5+Ff
+ DHe7FVq4tsXfN2F018nINcOFYzIdmFXuvfjOgRjI0qZ/Y7U9Ta/v4cUQ+A96sBwdzdptgoJf
+ r9a2b+KQmLinvMXp1k9Y1p4bWDY=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1586561121; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Sender: Date: X-Feedback-Id;
+ bh=njR/kWcntuvd/Fsq2Rg++Be/Croa+AmS3xCtKO7ZLOM=; b=bFObIf6+zwfael0JdmxroZIRwrQNeyUs4wFqR+eE1l30SDW7OeD25uE4XG26IPinH+VPXSiV
+ 7EOIjBrUg/PK1kp/jkDa66dvlc6otH0VSBMbiwQoK4HcS7330mncf4HuE+mnZZuYmZhMOB9y
+ +PwzLpBdhEZ7lZKi4EAunmDDKIY=
+X-Feedback-Id: 507b4f7b69d7c5503f0297d4:mailgun
+X-Mailgun-Sending-Ip: 209.61.151.41
+X-Mailgun-Sid: WyI5YTAxZCIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgIjA0NDUiXQ==
+Received: by luna.mailgun.net with HTTP; Fri, 10 Apr 2020 23:24:54 +0000
+Date: Fri, 10 Apr 2020 23:24:54 +0000
+Sender: no-reply@hire.lever.co
+Message-Id: <20200410232454.1.58853367C7F53AF8@hire.lever.co>
+To: yyk002016@gmail.com
+From: no-reply@hire.lever.co
+Subject: Your application to  - Revolut
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="6cc563ea78304dcc9cc0a795b049b40d"
+
+--6cc563ea78304dcc9cc0a795b049b40d
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+
+Hi Yukun,
+
+Thanks for taking the time to send us your CV. Unfortunately, this time we =
+won=E2=80=99t be moving forward with your application.=C2=A0
+
+While we aren=E2=80=99t able to offer personal feedback, it helped us evalu=
+ate whether this role would be the right one for you, your profile, and Rev=
+olut.=C2=A0
+
+We=E2=80=99re growing fast at the moment, so we=E2=80=99re continuously upd=
+ating our job opportunities. We encourage you to apply for our other openin=
+gs at Revolut that might be more relevant to your background, so check back=
+ to see if we=E2=80=99re hiring. From our side, we=E2=80=99ll keep your CV =
+on file, and contact you if we find a potential fit for you.=C2=A0
+
+We wish you all the best in your future!
+Your Revolut Recruitment Team
+
+
+
+--6cc563ea78304dcc9cc0a795b049b40d
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="utf-8"
+Mime-Version: 1.0
+
+<div>Hi Yukun,</div><div><br></div><div>Thanks for taking the time to send =
+us your CV. Unfortunately, this time we won=E2=80=99t be moving forward wit=
+h your application.&nbsp;</div><div><br></div><div>While we aren=E2=80=99t =
+able to offer personal feedback, it helped us evaluate whether this role wo=
+uld be the right one for you, your profile, and Revolut.&nbsp;</div><div><b=
+r></div><div>We=E2=80=99re growing fast at the moment, so we=E2=80=99re con=
+tinuously updating our job opportunities. We encourage you to apply for our=
+ other openings at Revolut that might be more relevant to your background, =
+so <a href=3D"https://t.lever-analytics.com/email-link?dest=3Dhttps%3A%2F%2=
+Fwww.revolut.com%2Fcareers&eid=3D63561f75-3e11-454b-9b2b-e3ebe67c007b&idx=
+=3D0&token=3DYKIG5KGHmb5izGyvaBwbHIuQFwc">check back to see if we=E2=80=99r=
+e hiring</a>. From our side, we=E2=80=99ll keep your CV on file, and contac=
+t you if we find a potential fit for you.&nbsp;</div><div><br></div><div>We=
+ wish you all the best in your future!</div><div>Your Revolut Recruitment T=
+eam</div><div><br></div><div><br></div><img src=3D"https://t.lever-analytic=
+s.com/email-open?eid=3D63561f75-3e11-454b-9b2b-e3ebe67c007b&token=3D69dAFcE=
+fnjGsiQYukjgk1EDPFbU" width=3D"1" height=3D"1" alt=3D"" border=3D"0" style=
+=3D"width:1px !important;height:1px !important;border-width:0 !important;ma=
+rgin-top:0 !important;margin-right:0 !important;margin-bottom:0 !important;=
+margin-left:0 !important;padding-top:0 !important;padding-right:0 !importan=
+t;padding-bottom:0 !important;padding-left:0 !important;">
+--6cc563ea78304dcc9cc0a795b049b40d--
+
+From 1662695010971452894@xxx Tue Mar 31 15:45:27 +0000 2020
+X-GM-THRID: 1662695010971452894
+X-Gmail-Labels: Archived,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a05:6622:59a:0:0:0:0 with SMTP id u26csp24884ivc;
+        Tue, 31 Mar 2020 08:45:28 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vu5u4vBgrT3DjE6q0dGPX5OqsE4XCctri4uKHLkavGJCVj5RmkzgyVK52xuddTO+zteK5za
+X-Received: by 2002:a0c:a602:: with SMTP id s2mr17457556qva.222.1585669528001;
+        Tue, 31 Mar 2020 08:45:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1585669527; cv=none;
+        d=google.com; s=arc-20160816;
+        b=koWEAdiXnFUETLGPKTwScnv/iKCjVHorznVAhTkMoEsHohSqsyQhJH60kQUB15FlbF
+         cE6kzDuUhlmwvPUZwx7JRrohsrAWJjYZaU4Uf/YnaemlgtBiqwJtIy2OV+NoF6kxzJ9N
+         kSmU6w7jSEs3tWrMNnh7vdQmjBg3teiB1k2xDWJTFx6cUE83W10p0hZ5ZZYHH9Bxfu2W
+         CxzG54Da5WYCXLsDo3UGpGWLTDBnPDezkJL9xkVqsqxsYiFUNd2C0qoSxzphlIx2+7h1
+         sdNYuE5sAI0fGlF5u+DRszQr3HIdVDrfUBN+DH6qAqulRFQvwMI13F/loEQ86C4iaYpz
+         ZK1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:date:dkim-signature
+         :dkim-signature;
+        bh=fsc2CsgWo/h/TW1zASREpkMkCHhJSN/UW5M8+2lBmK8=;
+        b=j/lEfF695QCdW8Cq9NUuq+2bDHW6HjfcBLN3WxqcdQqNBCBvOdX/HJQT1gVZRzOOA9
+         4B8XE7DJwGZrMwT0OoXpEPBLZ17zsIPZ6DkLPAon5umzd2XGoP80x5xOTxHjWKD74qGb
+         J6dQSPaKp5Z/pdyw6j0iW3f7oStEW4GgW2EChAzUtBlAOh7GblDeldlbW5aB52Fw9avS
+         ezo3bjphLHcZnjHETurTwkm97D0MX+8gWZGKQ/mhbQG7zBUpZW3+JNI1G55C53oHGsR9
+         sL3un/kYqFEkKGWgDboKOv6JjSGaW9/Df9RMlbafeT0Qxdc+AKKcrD6X31forhNx9jkX
+         2VFg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@gh-mail.zoominfo.com header.s=k1 header.b=LRr5bgoT;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=NoyMEJ8C;
+       spf=pass (google.com: domain of postmaster@gh-mail.zoominfo.com designates 146.20.191.233 as permitted sender) smtp.mailfrom=postmaster@gh-mail.zoominfo.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=zoominfo.com
+Return-Path: <postmaster@gh-mail.zoominfo.com>
+Received: from mail-191.233.greenhouse.io (mail-191.233.greenhouse.io. [146.20.191.233])
+        by mx.google.com with UTF8SMTPS id z14si10039060qvy.197.2020.03.31.08.45.25
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Mar 2020 08:45:27 -0700 (PDT)
+Received-SPF: pass (google.com: domain of postmaster@gh-mail.zoominfo.com designates 146.20.191.233 as permitted sender) client-ip=146.20.191.233;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gh-mail.zoominfo.com header.s=k1 header.b=LRr5bgoT;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=NoyMEJ8C;
+       spf=pass (google.com: domain of postmaster@gh-mail.zoominfo.com designates 146.20.191.233 as permitted sender) smtp.mailfrom=postmaster@gh-mail.zoominfo.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=zoominfo.com
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=gh-mail.zoominfo.com;
+ q=dns/txt; s=k1; t=1585669527; h=Content-Type: Mime-Version: Subject:
+ From: To: Message-Id: Date: X-Feedback-Id;
+ bh=fsc2CsgWo/h/TW1zASREpkMkCHhJSN/UW5M8+2lBmK8=; b=LRr5bgoT3DBWkl4bTcTCm/Uu6B34PLeWYGo/il2cewffqY3i1jsBtDXscON1nvHQKjRXHgK/
+ FpN1jh1dP41Y7XgIZFZuJwKa/4wkDL55GG2T2yREkFBn6O6QTT80dic5nnecaNLF6m42csD0
+ yg9QHTjhFIrTSWhirJzNCqi9IzE=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1585669527; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Date: X-Feedback-Id;
+ bh=fsc2CsgWo/h/TW1zASREpkMkCHhJSN/UW5M8+2lBmK8=; b=NoyMEJ8CIg6yW5KhxtBRgvB+bN5EnitmkXqaWCUCO4ETLZkfPnh4nAplrFgbJVtpH2xTyCoQ
+ U5AQEPo9GyOj1Qz0MndRTVC1wHUMYoG9oe9ocI5jJ1mg8+IcMIr8XQNHCc6zGaxppm7M/MS5
+ 6l+d5DRjwYLmyM7yumutQ48R/5E=
+X-Feedback-Id: 5c9b93574f41fe000137193c:mailgun
+X-Mailgun-Sending-Ip: 146.20.191.233
+X-Mailgun-Sid: WyI5OTNlMyIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgIjBkZWYwIl0=
+Received: by luna.mailgun.net with HTTP; Tue, 31 Mar 2020 15:45:20 +0000
+Date: Tue, 31 Mar 2020 15:45:20 +0000
+Message-Id: <20200331154520.1.F882D96796490B2A@gh-mail.zoominfo.com>
+X-Mailgun-Tag: ScheduledCandidateEmail
+X-Mailgun-Native-Send: true
+To: yyk002016@gmail.com
+From: no-reply@zoominfo.com
+Subject: Your application at ZoomInfo
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="48bc39f099db46e1bcf6977d29f34245"
+
+--48bc39f099db46e1bcf6977d29f34245
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ascii"
+Mime-Version: 1.0
+
+Yukun,
+
+We thank you for taking the time to apply to the Computational Linguist role here at ZoomInfo. At this time, we are pursuing other candidates for this particular role.
+
+We wish you the best in your search, and hope you will consider other roles here in the future.
+
+Regards,
+
+The ZoomInfo Team
+--48bc39f099db46e1bcf6977d29f34245
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+Yukun,<br /><br />We thank you for taking the time to apply to the Computational Linguist role here at ZoomInfo.&nbsp; At this time, we are pursuing other candidates for this particular role.&nbsp;&nbsp;<br /><br />We wish you the best in your search, and hope you will consider other roles here in the future.&nbsp;&nbsp;<br /><br />Regards,<br /><br />The ZoomInfo Team
+--48bc39f099db46e1bcf6977d29f34245--
+
+From 1663456265971402226@xxx Thu Apr 09 01:25:17 +0000 2020
+X-GM-THRID: 1663456265971402226
+X-Gmail-Labels: Archived,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:f588:0:0:0:0:0 with SMTP id l8csp1266467ivo;
+        Wed, 8 Apr 2020 18:25:17 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJee98aiRcFYYaJgkGGULsJse42i8DFq9aQ3RK/T04kg5PbcHBhi50eTzNX88Vl4AIGm6Uz
+X-Received: by 2002:a9d:798e:: with SMTP id h14mr5647702otm.88.1586395517015;
+        Wed, 08 Apr 2020 18:25:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1586395517; cv=none;
+        d=google.com; s=arc-20160816;
+        b=A4AB7Rjl0NFwi5uMoy9lKXJeNqzpgcT1tVXhpw8ZVdafSu7GHp4269ajHF0YMrHovS
+         Po0xuuFLhiS4fdb1QrQcUHQlTCrM9ZurbDh8rVDXPPWDxJLZAlnuMOhnomIy3JWx1lAF
+         7OaPGS7MW81AsSm9ifR/FIth95yau9rF9f75RkH2ZI91ec1n5pXOAqFUWVGGRKB5oz7N
+         lOIs62doxb4elDQKgzZmxULLJzrOClK7i/E3cQEfskNf7hSjVF2fZ5RsD6QgOZMeHIKP
+         aGnszrSAsItERBbmHd9RvpM8QR8mfRsIB2aA0TLzc5NT2f4FTYgGHLEuFszyLixdVAIR
+         MnOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:sender:date
+         :content-transfer-encoding:dkim-signature:dkim-signature;
+        bh=SbGAzby1cQG8Nz/meaHR2Z0A/Fcrf/6zrZC/f1KgoIo=;
+        b=WtknLC/k075JKf0GJUHNkBugimOvuOCaZJE5e2WVzT/1WhGxXROEy1S6xSN9HG++Pi
+         UDRd8jncKCLjLfo8BwphcEvS0LEgJJkUkVvhobk9WfpQNQK8x/EcJtab3jlh88Zt02fA
+         u9+/BLHprr3AAEZNhnuhVxAETFMPuX1F7kWrL/yboqASlHPjl9ncGPw60oiCusgH9cVK
+         cwH0Kj3/aRMM999HiK2F9x9ZbYP0HUR9PU6l+OFx8lYxo5lNHUe9zjYuJEMpM+5B4HVT
+         cou6tdSJyTJp4tqFPTzYoH+Q/Tyb/36aBIdWpgpCTRBiCTUe0Se9YbFZUUDPHNjXGRyA
+         2fSQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b=HHXKxujd;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=UdeFIeXU;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+Return-Path: <bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co>
+Received: from rs41.hire.lever.co (rs41.hire.lever.co. [209.61.151.41])
+        by mx.google.com with UTF8SMTPS id h66si3046430oif.53.2020.04.08.18.25.14
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Apr 2020 18:25:17 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) client-ip=209.61.151.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b=HHXKxujd;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=UdeFIeXU;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=hire.lever.co; q=dns/txt;
+ s=mx; t=1586395516; h=Mime-Version: Content-Type: Subject: From: To:
+ Message-Id: Sender: Date: Content-Transfer-Encoding: X-Feedback-Id;
+ bh=SbGAzby1cQG8Nz/meaHR2Z0A/Fcrf/6zrZC/f1KgoIo=; b=HHXKxujdr+N2RMbhYCIdUHZTF6T5X4NSRxckOyGPp1OIAbA6eaVdJOsjfefIL0xE7jzmcd5W
+ IEduQDnz8PF04pOETwTzWDEXiAJ9arRF6orWutlBm3VB9fr/pLwGTKa037aQesuy7u6bS4tL
+ 8jKSZW43oFTlJrhbUif3S7MkvlA=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1586395516; h=Mime-Version: Content-Type: Subject: From: To:
+ Message-Id: Sender: Date: Content-Transfer-Encoding: X-Feedback-Id;
+ bh=SbGAzby1cQG8Nz/meaHR2Z0A/Fcrf/6zrZC/f1KgoIo=; b=UdeFIeXU2X6Yu77PqCTiFX5U6rseeXYWT+lKaE9djquNkNiDNsv+1XInjdYIt2M9XhUq4R6y
+ t3P5Ue0MooKVFpfkZwOSU0BqGiEYaeC+dcDBEL+rREGpcLIBMJDYTbNTR5tRv+OTsr5U/qXv
+ wVuhHtyC79WqQ4+mLYWCghz1cO4=
+X-Feedback-Id: 507b4f7b69d7c5503f0297d4:mailgun
+X-Mailgun-Sending-Ip: 209.61.151.41
+X-Mailgun-Sid: WyI5YTAxZCIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgIjA0NDUiXQ==
+Content-Transfer-Encoding: 7bit
+Received: by luna.mailgun.net with HTTP; Thu, 09 Apr 2020 01:24:54 +0000
+Date: Thu, 09 Apr 2020 01:24:54 +0000
+Sender: no-reply@hire.lever.co
+Message-Id: <20200409012454.1.B790752EE0896E95@hire.lever.co>
+To: yyk002016@gmail.com
+From: Revolut <no-reply@hire.lever.co>
+Subject: Thank you for your application to Revolut
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+<div>Hi Yukun,</div><div><br></div><div>Thank you for your interest in Revolut! We wanted to let you know we received your application for Data Analyst, and we are delighted that you would consider joining our team.</div><div><br></div><div>Our team will review your application and will be in touch if your qualifications match our needs for the role. If you are not selected for this position, keep an eye on our jobs page as we're growing and adding openings.</div><div><br></div><div>Best,</div><div>The Revolut Team</div>
+
+From 1668751050862188941@xxx Sat Jun 06 12:03:37 +0000 2020
+X-GM-THRID: 1668751050862188941
+X-Gmail-Labels: Inbox,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:b011:0:0:0:0:0 with SMTP id z17csp2994120ive;
+        Sat, 6 Jun 2020 05:03:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzgcq+shkb8zansZKPM9ow+poqWBPCG4XUIMWNpZa9XUY9I8u5lbnnTTn210phoHjuhoZiX
+X-Received: by 2002:aca:cc8b:: with SMTP id c133mr4967863oig.5.1591445017886;
+        Sat, 06 Jun 2020 05:03:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1591445017; cv=none;
+        d=google.com; s=arc-20160816;
+        b=cAssAsOFKJXITHFAHUKEVmL0EGGMdUiUVSLtCgqEhJd6jtr7ktpokUDhuZu8Qylhs8
+         hEtDDy7HWjxXUUUtdFTAa8J8yG7jkHbzXzNi5yrESr2jCt6m4BEh88aZeDT+Nt9kQTmF
+         mFG2TmoTpD9Gty6aGcxVFsDxd1UhkIezXiqap1Rd86il2d9r0RAJpKw+eEV0Q2vIGpJX
+         vqW8MLnFxft9Yu7Cey9CIEhDs/MBfoWhuiU6FipqA/yvb02k6DJRN/ouhRIo3ANmBCaQ
+         1A+oQ7IwEd2CRKwJoh4KUMX/3RcZsjJJ1LxhEf8w/il5wI5fw6qHkRs4OfftPncniLfg
+         FvaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:sender:date
+         :list-unsubscribe:list-unsubscribe-post:dkim-signature
+         :dkim-signature;
+        bh=AeB3Eitygr7pBUZKiYmzi39WwCXCCe9iNaBo81bGpSI=;
+        b=N//X5Eh+eG0J+ZfZoqU/qS+0tDTulGwfaClcLCrrPpNKuevPHfGMBHWIu8ThyeA5MQ
+         jQBrNNrZZSLKMY1fnvt9LzRMty+TzAzytOiuG1ixdXHQ46Rkp+CxjkQBpkblsZ8Uzz4l
+         GsLlT9UnsodAw8G/j+e1BcFCyBZwooRnfpo4AtL7WdX+CgMczFnb8rVbjCE+ZKqjs6c0
+         d9fqGSSl0dBz1fmbp63Ued83GhGufDOUyTzH/dMSYVxtyaAmHvW303WY/ShPRTznPlSC
+         OmLaYRS+BFVQ+s1z9iGHc+sB9rFnWNoCYUH91Eb1OxaaSjZH4dMh/PHiwiBl0gALvUZG
+         7c1A==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@greenhouse.io header.s=mailgun header.b=lir6vHLv;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=F5ZKdjey;
+       spf=pass (google.com: domain of bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io designates 192.237.158.85 as permitted sender) smtp.mailfrom="bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=greenhouse.io
+Return-Path: <bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io>
+Received: from mail-158-85.greenhouse.io (mail-158-85.greenhouse.io. [192.237.158.85])
+        by mx.google.com with UTF8SMTPS id z19si2779147oog.42.2020.06.06.05.03.36
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Jun 2020 05:03:37 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io designates 192.237.158.85 as permitted sender) client-ip=192.237.158.85;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@greenhouse.io header.s=mailgun header.b=lir6vHLv;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=F5ZKdjey;
+       spf=pass (google.com: domain of bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io designates 192.237.158.85 as permitted sender) smtp.mailfrom="bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=greenhouse.io
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=greenhouse.io; q=dns/txt;
+ s=mailgun; t=1591445017; h=Content-Type: Mime-Version: Subject: From:
+ To: Message-Id: Sender: Date: List-Unsubscribe: List-Unsubscribe-Post:
+ X-Feedback-Id; bh=AeB3Eitygr7pBUZKiYmzi39WwCXCCe9iNaBo81bGpSI=; b=lir6vHLvAtxCFrLJFpZCXJmex0FYl9m4shJ0WgkO31532zINfv9OJiYpAB5oskRlvEzwlF/z
+ K9HX6I6q7Ngq5ML56UZ5/zB1m8h1NnzC4erjT/+kke681vnZhzST/m4lw0iTm/pvjv4N+cB3
+ CInB8ys6liemH0aWlDpBAtF7FP2ogWHpSmvo07dEYxaFXo8jwFlYjxUYdxxFgzJhK8ifs6nh
+ oiuH9koFDdVb/8gLN2Lb1uCQogcpinn2W9QtC1OeT4QePPj6484g4kJznVIqsulh+lLvoGKO
+ zUACycu3pfocPrMh78BRqaWF7Y1SKKIiY1XRhGLvPSk/s8RzPJyqug==
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1591445017; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Sender: Date: List-Unsubscribe: List-Unsubscribe-Post:
+ X-Feedback-Id; bh=AeB3Eitygr7pBUZKiYmzi39WwCXCCe9iNaBo81bGpSI=; b=F5ZKdjeyyIy8GRYB2d5TpisC1McBnuz58LhNO9jN9r5LN9XOTQ6MV3vNM5c1RzSdUDTODvDy
+ uKDlcihMRQKqKDN33zPhACoBun6t8xtSFQXmn3H1p6ZLDjLIfYs5BrmiDl4aRPqVhRfs/GLX
+ 6HzcQf2Y8M06AtGgVi12iZ06Wwo=
+X-Feedback-Id: 546d09648032675920a31d41:mailgun
+X-Mailgun-Sending-Ip: 192.237.158.85
+X-Mailgun-Sid: WyI0Nzc2OCIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgImU1YzA0Il0=
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+List-Unsubscribe: <https://link.mailgun.com/u/eJwVzE0OgjAQQOHT2GUzP2U6LLowxBN4gqYdpBEkQVhwe2X98r2arCsQXEsEBCAgSMDcefQxBGAdIvFdBmS6BXhtZp9pPb7m2-qmpD0rcs9RFTUKYzEhQlGxPMKY3ZbO8w3_M8rFl9xmX9bF7elZJqvHbHXIn9pq3u1x1R-P9ykh>
+Received: by luna.mailgun.net with HTTP; Sat, 06 Jun 2020 12:03:35 +0000
+Date: Sat, 06 Jun 2020 12:03:35 +0000
+Sender: no-reply@greenhouse.io
+Message-Id: <20200606120335.1.744038C723A6C132@greenhouse.io>
+X-Mailgun-Tag: ScheduledCandidateEmail
+To: yyk002016@gmail.com
+From: no-reply@greenhouse.io
+Subject: Follow up from Cardlytics
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="fcb88aeb5a234bc6bbca6e181ef72077"
+
+--fcb88aeb5a234bc6bbca6e181ef72077
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ascii"
+Mime-Version: 1.0
+
+Cardlytics Logo
+
+Hi Yukun,
+
+Thanks for your interest in opportunities with Cardlytics.
+
+We wanted to let you know that the hiring team decided to move forward with another candidate for the role.
+
+Stay close for future opportunities that align with your background!
+
+Best,
+Cardlytics Talent Team
+--fcb88aeb5a234bc6bbca6e181ef72077
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+<p><img src="http://www.cardlytics.com/logo_for_greenhouse/images/cardlytics_logo_01.png" alt="Cardlytics Logo" width="234" height="57" /><br /><br />Hi Yukun,</p>
+<p>Thanks for your interest in opportunities with Cardlytics.<br /><br />We wanted to let you know that the hiring team decided to move forward with another candidate for the&nbsp; role.&nbsp;&nbsp;</p>
+<p>Stay close for future opportunities that align with your background!</p>
+<p>Best,<br />Cardlytics Talent Team</p>
+--fcb88aeb5a234bc6bbca6e181ef72077--
+
+From 1668848504493928363@xxx Sun Jun 07 13:52:36 +0000 2020
+X-GM-THRID: 1668848504493928363
+X-Gmail-Labels: Archived,Important,Opened,Category Personal,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:b011:0:0:0:0:0 with SMTP id z17csp3779641ive;
+        Sun, 7 Jun 2020 06:52:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSnOVkCxCclu4wc/vR2LawKr6pAK7Muv6Rn1TaUdWFvZ+8iVmvi85jcl+8baqBTO/u3W59
+X-Received: by 2002:a37:8ec3:: with SMTP id q186mr19000486qkd.231.1591537956494;
+        Sun, 07 Jun 2020 06:52:36 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1591537956; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=T011y5z0FFCsMoNLbinjZqV5b4smzuD8IlSXHIEIU15NC96CQVyXGXeRnsfV30W+Tt
+         Dw9DvN7ufu5Xlz6Z91z5i4YBAgqnyzgD+eb6LcYwcGwB0eIzSw873dGloU8L7yih9l6K
+         LZGUejznhyKpjMP0XP8Ip3U/nOT9DVHMQ6cgrgCEKyHhxK5ORoBsYv31CQT7kZvXXVZt
+         5XLfkIS1NqbCwmBj0xOU6aRGvsssspp8WEHzSyfT5RVre5nWYdFPHROpoY+weZfhgLVs
+         VDJpfOgDJAykJ8T1hFhMtgVZuUTX3h2GiEdzRGQOMxqcOMswKiTyjoj4JZf7/xUqnkLX
+         as6A==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:message-id:date
+         :thread-index:thread-topic:subject:to:from:dkim-signature;
+        bh=N40Ebn/ylUM6oZXD6K0iCbnX9bFVDi4b9d1f5B56Szg=;
+        b=I8qzM1AEcKwTfkprcXrml6WvRybym01CZJkTnBxscWFgCtcjELK2yDsCr0dlAtS3J/
+         Kh2ir83KRzZDvROodNa3ltsgsgTSVNhoEd0bh8LKKPOv1WkVhT9d+VsUmWxqkULH1ZrS
+         Rs1xaVoZMKMZF0lEUHe7E5J07r978UYwQZ5XxRnkrLRePxhCcT6FJXRIzxGJ0piH+Wcv
+         u+12EgCqrP1IIxSnVW/tWw3jTOcLHJEGu1wJPVfe7fr78Z6e4WhSRuaqCE5hXiHGkkGa
+         F7DeBU2atQH6seZZcT1jpHXZfFNe2qLwI8u1butk7+RdtzBIB3rrFPhuEqAB5/nM118V
+         ZhSQ==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@cerebriai.onmicrosoft.com header.s=selector2-cerebriai-onmicrosoft-com header.b=TrJ7cOpt;
+       arc=pass (i=1 spf=pass spfdomain=cerebriai.com dkim=pass dkdomain=cerebriai.com dmarc=pass fromdomain=cerebriai.com);
+       spf=pass (google.com: domain of alain@cerebriai.com designates 40.107.66.78 as permitted sender) smtp.mailfrom=alain@cerebriai.com
+Return-Path: <alain@cerebriai.com>
+Received: from CAN01-QB1-obe.outbound.protection.outlook.com (mail-eopbgr660078.outbound.protection.outlook.com. [40.107.66.78])
+        by mx.google.com with ESMTPS id v54si3186750qtk.167.2020.06.07.06.52.36
+        for <yyk002016@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 07 Jun 2020 06:52:36 -0700 (PDT)
+Received-SPF: pass (google.com: domain of alain@cerebriai.com designates 40.107.66.78 as permitted sender) client-ip=40.107.66.78;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@cerebriai.onmicrosoft.com header.s=selector2-cerebriai-onmicrosoft-com header.b=TrJ7cOpt;
+       arc=pass (i=1 spf=pass spfdomain=cerebriai.com dkim=pass dkdomain=cerebriai.com dmarc=pass fromdomain=cerebriai.com);
+       spf=pass (google.com: domain of alain@cerebriai.com designates 40.107.66.78 as permitted sender) smtp.mailfrom=alain@cerebriai.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pv9oKY46zkRxnEDCfihc62kcYTGcBbrFeNGPjeGcHltQFlaPmqFcCj8N/lRg78kDcEWIyzlFfc/wPUe+0L5Zq0KlXdrBUOf1BR287bueiimQjUBh6gnif94d7HtsE9KqHCh9JqPsAJcSO8THZInokneBfyqG272o5ewufzofmmtiYyBVlfakkAViWxu8pBQl07rpKpYXUsZdb27rV+SWFA7ioefM6S4uFArtr3imWhU/kiUdrW9BgwarGdrbDyON7l91LzH+WUcLcg8gYaAqzx2q042cIsv9vE4LmJdhe8nmYUXkBvW3c5fg9jq3GUKpRTvSwTaNK2v2nKwGcgLHxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N40Ebn/ylUM6oZXD6K0iCbnX9bFVDi4b9d1f5B56Szg=;
+ b=Nn5s+rS9eqWIdOzDK0qCW+wSICFTejXnRiJ9irapAKWWtGdlOiqfWG7gNfxriSsHMYXSx/oBPedgnc8elg9wDAaueYDOC52KeP25RbsgHw7uM2SniAhsKw6XHjTqIkPgtTB6NTrQ4aCU9tgz/HUpEBDMuGm9qUj/CctEoL0uHrvnXbNlGy+ELKE09ViV8BS854OiKN31hhfYaWVp1aiGtsV86dt3EsACZcc0ENHcKTT9SdGxRtvf9836oX57ZxeJnEOJ+jnG0MFPqr6S8Fy8IoRAPpQUlN9wSx1I5dB5efp+CM4u12824301Yj9oshYREAWfK+yUa1Q+irueaYJjDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cerebriai.com; dmarc=pass action=none
+ header.from=cerebriai.com; dkim=pass header.d=cerebriai.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cerebriai.onmicrosoft.com; s=selector2-cerebriai-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N40Ebn/ylUM6oZXD6K0iCbnX9bFVDi4b9d1f5B56Szg=;
+ b=TrJ7cOptrehA1rF8I350tJmKynbDocdHCBWDYFxQAJDYCugh7eNEW51ji4DlgL5Yl2UTztETDeIBXMn54M2KqB6FS0IRJ/Nhb+mTMVF7BtACnCmbc1eMh69T7pEoz4j+EsgFZ3vgiGxKujujedDRCgcFUTOSpLonDY78cvNue/k=
+Received: from YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:10::26) by YQBPR0101MB2227.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:5::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.20; Sun, 7 Jun
+ 2020 13:52:35 +0000
+Received: from YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::3572:ccd6:3d22:2182]) by YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::3572:ccd6:3d22:2182%7]) with mapi id 15.20.3066.023; Sun, 7 Jun 2020
+ 13:52:35 +0000
+From: =?iso-8859-1?Q?Alain_Brian=E7on=2C_PhD?= <alain@cerebriai.com>
+To: "yyk002016@gmail.com" <yyk002016@gmail.com>
+Subject: Cerebri AI
+Thread-Topic: Cerebri AI
+Thread-Index: AQHWPNLlHsOlN5RKzEaKVXlXosET8A==
+Date: Sun, 7 Jun 2020 13:52:35 +0000
+Message-ID:
+ <YQBPR0101MB0833F39E60CC9FE57D52EB16BE840@YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-lever-msgid: 78d63fb2-1872-4084-b678-31aac4b6b97e
+x-lever-emailthreadid: 5dfe0ba5-a008-481f-9e98-b427044225ef
+x-entity-ref-id: c5082f71-56a5-4242-a7bb-44b812bdd260
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=cerebriai.com;
+x-originating-ip: [20.190.128.108]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ef93ced9-89f4-4712-5993-08d80aea0889
+x-ms-traffictypediagnostic: YQBPR0101MB2227:
+x-microsoft-antispam-prvs:
+ <YQBPR0101MB2227890F3F5A174EC38E284BBE840@YQBPR0101MB2227.CANPRD01.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 04270EF89C
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ EzP7AAVk2tcS9NE8Y52OdyaHhyVDLVxAnPYrhUBADTB2NNbvpiAYpuDhy/w90PVxNatw3sWWKvOU/EwWbHCdF88UIeivNuOYbWyTdYUzy/H6imSqrpRDewNBm6yNmzs4a2t4w4cNthRYG1UUvFCgokQJ6wkdwfvwDYYCvSHMVizzSYUQ602T/U+rsXjtMSBFknGs77OoOp6+rLewTnMZDsvnSLOe14sS44YBYPZwJNUE36o6cAmxGtvJW12e2PUCv6SX5huX2AyRR0HKbRbf16T+rS8A4p2z4uVCpNPP24BOm/+K5hznVuIla0Ty0K7bbNgCsAeaiNIL5Q8aFpM6eg==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQBPR0101MB0833.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(366004)(34036004)(346002)(376002)(136003)(396003)(39830400003)(71200400001)(26005)(186003)(6506007)(83380400001)(86362001)(316002)(508600001)(2906002)(8676002)(7116003)(6916009)(9686003)(55016002)(8936002)(7696005)(33656002)(5660300002)(3480700007)(52536014)(91956017)(76116006)(558084003)(66946007)(66446008)(64756008)(66476007)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata:
+ xxTjRMZDmauggGx1eEkkvkBGCIWcsu8AO1zeB+57eU+IA3+RGB5eJF7urnfLA5c08jJXt6lndeBRUl7JAvOK+f3wElQVs4C3oi/HDhCFzElqGOiCzndf0VMtkfxnpNrE6LgIsYTRKAJ6TMECv/3xkYmGTfTfBBywXXQ976p4/uqbJPOhlLii+UWXxMp3ju/HLf3XyIQjmH0sWLscMCrhkwIyxUKk6df3b3+5V1Sji7PLElYjg2f7zX8iw9X/1gK/VkZQjyGXhIKl9wuAZwgcsaLSlQ0mw+se80xxaxJ7kWM9rLEBk7tYwcsNUJbZxWwsZdN9/lyvWjQH11TvpRpuxZQhZuXOuQ93zi4cy35iwLMGz/iiLTqQExlNWgJ5beQlbXR4/dAg17Huic3YKyYNNeaCQ4x5HRr4FNISW3ezYD8bpVgVdFdrl/mFOPNFjw2QgB5SdDr+SFBlbbobMtXFt2f90Gt/AM+8pH1VByJP9JYsshMHkcSahXoyqJgfOkr2
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/alternative;
+	boundary="_000_YQBPR0101MB0833F39E60CC9FE57D52EB16BE840YQBPR0101MB0833_"
+MIME-Version: 1.0
+X-OriginatorOrg: cerebriai.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef93ced9-89f4-4712-5993-08d80aea0889
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2020 13:52:35.4089
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1946d4d7-a78f-4be2-9f20-a92dd66a7f6e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /QtNEaR1U6kPeLvIwWligZ/3U6ZU1Ld6jiFNezKT7W2DsZdo9BKEljMftZVl4ACcxczj+A1YmlPibMiKNhZwOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQBPR0101MB2227
+
+--_000_YQBPR0101MB0833F39E60CC9FE57D52EB16BE840YQBPR0101MB0833_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Yukun,
+
+Thank you for your interest in Cerebri AI. We are reviewing many candidates=
+ at this time.
+
+Unfortunately, Cerebri AI will not be moving your candidacy forward. We do =
+wish you the best of luck in your professional search.
+
+Thank you.
+
+Alain Brian=E7on, Ph.D.
+CTO
+e: alain@cerebriai.com
+
+
+--_000_YQBPR0101MB0833F39E60CC9FE57D52EB16BE840YQBPR0101MB0833_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+</head>
+<body>
+<div>Dear Yukun,</div>
+<div><br>
+</div>
+<div>Thank you for your interest in Cerebri AI. We are reviewing many candi=
+dates at this time.</div>
+<div><br>
+</div>
+<div>Unfortunately, Cerebri AI will not be moving your candidacy forward. W=
+e do wish you the best of luck in your professional search.</div>
+<div><br>
+</div>
+<div>Thank you. </div>
+<div><br>
+</div>
+<div>Alain Brian=E7on, Ph.D.</div>
+<div>CTO</div>
+<div><span style=3D"font-size: 12px;">e: alain@cerebriai.com</span></div>
+<div><br>
+</div>
+</body>
+</html>
+
+--_000_YQBPR0101MB0833F39E60CC9FE57D52EB16BE840YQBPR0101MB0833_--
+
+From 1668330441900764109@xxx Mon Jun 01 20:38:13 +0000 2020
+X-GM-THRID: 1668330441900764109
+X-Gmail-Labels: Archived,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:b011:0:0:0:0:0 with SMTP id z17csp3097076ive;
+        Mon, 1 Jun 2020 13:38:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMfDgysyp2yRu3NmC47I/L4uVmh5HOn63R1NvZWyQLff3DqpgBX6N3cAkMEiUK31qJ/7UJ
+X-Received: by 2002:aca:ecc7:: with SMTP id k190mr701348oih.117.1591043893371;
+        Mon, 01 Jun 2020 13:38:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1591043893; cv=none;
+        d=google.com; s=arc-20160816;
+        b=r9CymWSoi6qNHUmAlgT/yex0LECP+xayz5hJhrD24Sj6ZqcgTU3uRJesu+hvUFk10R
+         5Bp/dDTwuHkvVA8WVuqKQDPk22lXOb9toZYhLPM9y9fPoaW4uuCTN6LyN4mMvpAKsBA1
+         3vJsMiJlRBrA+P2PLzdFqErYStL7F6qx7yDJ8gKbni+U7i2mkzfNlwZjyEYXnwPMFR0X
+         zB1clKAV5jhBpQPah3IPNrpVynq5Abun99cmQz2NuPypEBFtZARrY+55OEAZAIqcCLal
+         d6C3R1XLkz1lHu+/5uVHPAZsrluhFG9T3zPWCwIX/hmkAPrbeE/Ko9FQfM9hHcvEcbc7
+         9Ahw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:sender:date
+         :content-transfer-encoding:dkim-signature:dkim-signature;
+        bh=aWJlOUF607b8Au5FL2n6gHpgZdLAFKutEi5E6PewjiA=;
+        b=mzAVASG3RwZuCdUK+3tFfOMCSz5QTuTmWwOUnwVu5XCL4iYmpXnctArkK/sDKU8n4H
+         u8IaTEw5umofy/Ljiz6Y3hY9sCeiC1xWtSM0WSH22Q2ZfRZ1cIhIQOLtU+t6IPPT1vSn
+         1MHl5gcVN0GITU0RyJUFniwYwAJYnFSC7eTI82FR34RCFqtdZel/whxGaVfcDlpOYoNP
+         IuHeoTL/LGVe5e8matuQ6woyyZrIVZp5lDHYHHxvAc2Rs91hLL+RS8BRACtLUVaf2sqr
+         3QaIVU6/yf9b7vpy6qZzbpuNdit+XR6aIoMTwTWJpOhuwO+5GrSX05qIrMlUS6CiXEKZ
+         V6Mg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b=qLjBM9kQ;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=yJcSYuQW;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+Return-Path: <bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co>
+Received: from rs41.hire.lever.co (rs41.hire.lever.co. [209.61.151.41])
+        by mx.google.com with UTF8SMTPS id l13si83788oie.126.2020.06.01.13.38.13
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2020 13:38:13 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) client-ip=209.61.151.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@hire.lever.co header.s=mx header.b=qLjBM9kQ;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=yJcSYuQW;
+       spf=pass (google.com: domain of bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co designates 209.61.151.41 as permitted sender) smtp.mailfrom="bounce+42cc52.0445-yyk002016=gmail.com@hire.lever.co";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=lever.co
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=hire.lever.co; q=dns/txt;
+ s=mx; t=1591043893; h=Mime-Version: Content-Type: Subject: From: To:
+ Message-Id: Sender: Date: Content-Transfer-Encoding: X-Feedback-Id;
+ bh=aWJlOUF607b8Au5FL2n6gHpgZdLAFKutEi5E6PewjiA=; b=qLjBM9kQvqjTtuNwFH/N5Em2NOkrRHixqBMtojImS5/xgPvu97TYbVK7LhZbqIZY6djxbSf1
+ iwdnKFAsuC5qap9z035EH0Uf5YXa7p5+1/zxg9OSapZN3KRBTLpx05Br8Ls3E7+Fx/CRPnIN
+ RjyE69Shw2Sh47GbyUC17U7qg+8=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1591043893; h=Mime-Version: Content-Type: Subject: From: To:
+ Message-Id: Sender: Date: Content-Transfer-Encoding: X-Feedback-Id;
+ bh=aWJlOUF607b8Au5FL2n6gHpgZdLAFKutEi5E6PewjiA=; b=yJcSYuQWB3Ro4djcNPIoEZ1fkxSKFYh0sgYwGDPFxqhMZQKejvalMn32lwoY3Zlkw3fk1LCm
+ LphFqpiOweoITgHAYcHBLA35UxG68RaOaUQrPxYMikPl824fl2d3NTaUxUYDh8erkBbHTLoB
+ SSudWIRlOWR1w9K55fRVlQ1hODI=
+X-Feedback-Id: 507b4f7b69d7c5503f0297d4:mailgun
+X-Mailgun-Sending-Ip: 209.61.151.41
+X-Mailgun-Sid: WyI5YTAxZCIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgIjA0NDUiXQ==
+Content-Transfer-Encoding: 7bit
+Received: by luna.mailgun.net with HTTP; Mon, 01 Jun 2020 20:38:12 +0000
+Date: Mon, 01 Jun 2020 20:38:12 +0000
+Sender: no-reply@hire.lever.co
+Message-Id: <20200601203812.1.B7E286A85AE1B104@hire.lever.co>
+To: yyk002016@gmail.com
+From: Cerebri AI <no-reply@hire.lever.co>
+Subject: Thank you for your application to Cerebri AI
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+<div>Hi Yukun,</div><div><br></div><div>Thank you for your interest in Cerebri AI! We wanted to let you know we received your application for Data Scientist, and we are delighted that you would consider joining our team.</div><div><br></div><div>Our team will review your application and will be in touch if your qualifications match our needs for the role. If you are not selected for this position, keep an eye on our jobs page as we're growing and adding openings.</div><div><br></div><div>Best,</div><div>The Cerebri AI Team</div>
+
+From 1666067657507594995@xxx Thu May 07 21:12:14 +0000 2020
+X-GM-THRID: 1666067657507594995
+X-Gmail-Labels: Archived,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:fb0e:0:0:0:0:0 with SMTP id r14csp3086264ivd;
+        Thu, 7 May 2020 14:12:14 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIeUTfZXbq7VYHuR+4BQWjWrhdCAPuIs409BnhBldC4BGgNVHwgoGw90583iVTmSKhDe5GY
+X-Received: by 2002:a02:350d:: with SMTP id k13mr1721972jaa.14.1588885934218;
+        Thu, 07 May 2020 14:12:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1588885934; cv=none;
+        d=google.com; s=arc-20160816;
+        b=vZr4DxeqAd7OyEPMpTy2w57nv7cI5C7Slpcw0xDrQYu1wsLQYgsRhH4XYnnMwn0z1t
+         d3STsl0L2qFGUv1ulmghbXK4cO0ByblRli+FVKqqs6R0+WTIJsdRUNmznTVLXoQu9YJL
+         HavLfQGWwGOcLog4wHIAz76qXEF7oV57rJMFeJWI6pxsSmpvxKJoq1mTZrzRMvsuwRvH
+         d+MPO0rPu/iQMOsA6rAl7wwnNRqorVIGB8us4t7azu6a3wwN/gtau13tfXriCQqQFTpI
+         dplDp1x1oBJALcVLTPwpurCTgpKiytQoE0SKCrwfWM15hcfyADlhAA9zytJwSORgbecA
+         HmQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=subject:date:reply-to:to:from:mime-version:message-id:feedback-id
+         :dkim-signature:dkim-signature;
+        bh=fR0I1UdIPeavliyP06qQRpIywpaZ0L3VCiVjTYxTc08=;
+        b=0kSB9QeE1l9fdOpAu5z2H5UExoDKPuo4Lxnoh/uKh0VsWVHVpAsdatpD6HXmDPWRPz
+         qW06QieypGzNQCzfPO/P2WmqG62fnlVYepzNsPlIedB1GUfXd78SlcXaWsLFuCIp82uE
+         ev5XOIWr3TMGR7oKRKkpkcLeHgTX6qej7Ns0mrWi7htx0hlRLs/i463kuxGQASN6mmnm
+         4OCi50KqOnSjBICmTmXJN4rY1OwORtzr7YV4126YkG0VSEtCz8Dyw2MhYPdcdHCEhUys
+         7UQ19CKlzWnjkPlH4K+y8x6UlfnJ5/vQsLJrCSThs+QCHju9mB0oB25wZLbcfpZEXx2X
+         +fUQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@hirehive.io header.s=20150618140423.pm header.b=kQjwrokP;
+       dkim=pass header.i=@pm.mtasv.net header.s=pm header.b=AqmWjXBK;
+       spf=pass (google.com: domain of pm_bounces@pm-bounces.hirehive.io designates 104.245.209.246 as permitted sender) smtp.mailfrom=pm_bounces@pm-bounces.hirehive.io;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=hirehive.io
+Return-Path: <pm_bounces@pm-bounces.hirehive.io>
+Received: from mta246b-ord.mtasv.net (mta246b-ord.mtasv.net. [104.245.209.246])
+        by mx.google.com with ESMTPS id b11si5485311ilf.47.2020.05.07.14.12.14
+        for <yyk002016@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 May 2020 14:12:14 -0700 (PDT)
+Received-SPF: pass (google.com: domain of pm_bounces@pm-bounces.hirehive.io designates 104.245.209.246 as permitted sender) client-ip=104.245.209.246;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@hirehive.io header.s=20150618140423.pm header.b=kQjwrokP;
+       dkim=pass header.i=@pm.mtasv.net header.s=pm header.b=AqmWjXBK;
+       spf=pass (google.com: domain of pm_bounces@pm-bounces.hirehive.io designates 104.245.209.246 as permitted sender) smtp.mailfrom=pm_bounces@pm-bounces.hirehive.io;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=hirehive.io
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=20150618140423.pm; d=hirehive.io;
+ h=Feedback-ID:Message-ID:MIME-Version:From:To:Reply-To:Date:Subject:Content-Type; i=mail+darkowl_6b5f3a423988c3ad@hirehive.io;
+ bh=A17pQtVuPnc+/xc+ipiuQyWJ4W4=;
+ b=kQjwrokPvI/d5NUnM5UNy4EJPTpfn+dWpo4qgR7OYF/NZvQomTSB9B/3qNvvA5W8eB1u6JbOnghz
+   zPxMwRyj+o1JcbS7wtfC9+I1t/+I7Brj7hC+Bn4XJU6dSVmCZM2pAHJBB4EpID+DeGS8Ezzt+Sqj
+   xR6Wh1jBGNDIcoaIYrY=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=pm; d=pm.mtasv.net;
+ h=Feedback-ID:Message-ID:MIME-Version:From:To:Reply-To:Date:Subject:Content-Type;
+ bh=A17pQtVuPnc+/xc+ipiuQyWJ4W4=;
+ b=AqmWjXBKtNYTutX015k/sV2uBIZH7ERTaShMc4EJubjiOFdRkSoDL7yZEaSxX6gKKm5VX4qQZTIA
+   hc8foQkYBGl5YsStSoVTa9j/EcxEiVHfJYmT/LKzqarQpsbvj9mtaIVFz+5C92zrrrSMUKn8QWD6
+   70VttBFHJrGKg3b0tpo=
+Received: by mta246b-ord.mtasv.net id hmhsqs1jk5kr for <yyk002016@gmail.com>; Thu, 7 May 2020 17:12:13 -0400 (envelope-from <pm_bounces@pm-bounces.hirehive.io>)
+X-PM-IP: 104.245.209.246
+X-IADB-IP: 104.245.209.246
+X-IADB-IP-REVERSE: 246.209.245.104
+Feedback-ID: s21924-_:s21924:a32336:postmark
+X-Complaints-To: abuse@postmarkapp.com
+X-PM-Message-Id: 1814420c-b52b-4208-8cc8-088b669143f0
+X-PM-RCPT: |bTB8MzIzMzZ8MjE5MjR8eXlrMDAyMDE2QGdtYWlsLmNvbQ==|
+X-PM-Message-Options: v1;9Hcc_PIAriBnYBOfaIwCcyIPcaJJ4QcTBG0Vjf0upsLgpqRZa9tU6RIlMq6j-Xrc
+Message-ID: <1814420c-b52b-4208-8cc8-088b669143f0@mtasv.net>
+MIME-Version: 1.0
+From: "Kelley Krupicka - DarkOwl" <mail+darkowl_6b5f3a423988c3ad@hirehive.io>
+To: yyk002016@gmail.com
+Reply-To: mail+darkowl_6b5f3a423988c3ad@hirehive.io
+Date: 7 May 2020 17:12:13 -0400
+Subject: Application to Jr. Data Scientist | Development Team | DarkOwl
+Content-Type: multipart/alternative;
+ boundary=--boundary_1743493_217bc7ae-3149-4e40-b06d-4bf71be2aaf9
+
+
+----boundary_1743493_217bc7ae-3149-4e40-b06d-4bf71be2aaf9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Yukun,=0D=0AThanks again for your recent application for the=
+ Jr. Data Scientist | Development Team position at DarkOwl.=0D=0A=
+After careful consideration I regret to inform you that on this o=
+ccasion we have decided not to progress your application any furt=
+her.=0D=0A=0D=0AThanks again for your interest in DarkOwl and we =
+wish you the very best for the future.=0D=0A
+----boundary_1743493_217bc7ae-3149-4e40-b06d-4bf71be2aaf9
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><body><div>Dear Yukun,</div><div>Thanks again for your rece=
+nt application for the Jr. Data Scientist | Development Team posi=
+tion at DarkOwl.</div><div>After careful consideration I regret t=
+o inform you that on this occasion we have decided not to progres=
+s your application any further. </div><div><br></div><div>Thanks =
+again for your interest in DarkOwl and we wish you the very best =
+for the future.</div><img src=3D"https://ea.pstmrk.it/open/v3_FVN=
+3YZNSqjEZNdT_PTK5zOZZClWWj27qZCa2UeFaUXDQpDXiw70npEA7EbYZgzUmWWfe=
+kkYe369vL8H7Y2GXR6lMex7lIjdWJb0Ho6OKdnQAgmarm8IgIt6rVX6NySMIhTvw5=
+ERam4Sq6V6jbmR7UIZ9UXF1G1afMnrQLZCTM_FKg5hOL_VCjiOd-GGwlKLAIxyT2K=
+fk21YG6TBEyjb8S0EOW0vLttpaG0tlrQFMQTBxrY8XMHgdEB4cpqIB7I8v_HuwxkE=
+qZDlveNtkQFvFL7HQ7fX88Jrdg6l1NfJ29BDBUoYY2fDRzBSjdv6gDA-9HBvddClC=
+utjYOhdYhfaiwpbrX3EC7et0jFoSRTC7nxeqYlfW6v0Xg4oQC3oa7P2FaGyZCszGq=
+H73eHsfD8OM1mNA2_-U_xfnyJA3kZ5SCd1eMSJqHq2HrrFL2o7zMxvoSJLBfrVS3p=
+S9Ug4ISihdZaJAZDnLnZwpeZ1APxoFhJZ4YSC1LjfIxEdvMM4PKKMv" width=3D"=
+1" height=3D"1" border=3D"0" alt=3D"" /></body></html>
+----boundary_1743493_217bc7ae-3149-4e40-b06d-4bf71be2aaf9--
+
+
+
+From 1667881789697221177@xxx Wed May 27 21:47:05 +0000 2020
+X-GM-THRID: 1667881789697221177
+X-Gmail-Labels: Archived,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:b011:0:0:0:0:0 with SMTP id z17csp63192ive;
+        Wed, 27 May 2020 14:47:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBd7Lhb6uvEgte6cvy1i1HDYVmDFqU+HsWV9p089gSL04oG0Ej23ScuX7EBCAMPTTzotBC
+X-Received: by 2002:a92:cd0e:: with SMTP id z14mr266242iln.307.1590616026066;
+        Wed, 27 May 2020 14:47:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1590616026; cv=none;
+        d=google.com; s=arc-20160816;
+        b=hOZ4RbKSvdZcfe/ZjwdlhLrzVUqNpemEpWmtI+QAERshL/c1RlDh0pWQ1SoNh36Hq2
+         bSQoNU3+ACdpOpe060DH2JyAFaa1i87nR66G4W+9dv4ESAf2Nqf6tbDvPb7p0+cp3Wdb
+         OlagkGsevW5IFZT/wZtDmp7lImrr7vSISYLHtkRbp7fSzY7uUKkyTdEKmMGQMQ7TbdOr
+         iUn+KFRTruq0jHK1sVD4DWyaCGEbn71W36V+W1/ir6SsdfQsX/LfVfS7/lnGoT3z6aS0
+         f3Wuxp/ReYcE6MziGtlAW85KvHKIQEBlpYG9gwYlp6JeBf51l9WLdCbwNMjoLdpsdmpZ
+         0RbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=date:importance:mime-version:subject:message-id:to:from;
+        bh=I3Va9bImYLQui5g0eGnjztveHGCc/VkWxLlsI0Sc+jc=;
+        b=LPNsrekzEHFkTNiGcOdVksDtGhquiLa+PmESPB+0cCfB+aweeFnb6I9k3yc0N6kV6x
+         fTQ57TqAbwW/6t21EcPlfqPpAYiMr6v2trdnwf/M7kDuZE9+NgdlZ6MD0bZ+n8GIVk47
+         1HYnb/ZvscRjjcwDRhYciTSDRp+aXE2PqkBYOJRU0lsIIDQFfNZlWgbIuGyGZO5DHgy6
+         oz+2G0VPJvobWc+Arfc7w/0WaDrOpceCdDCu1qLtIinKx7BABAyu/yYJQxteCBccHw9i
+         IoNOMjh38ZhLn59v0AIUmoKeWdsu7+hjTnAbf/M+Qft2A1HakpIDJUAERUSDYpMZgeX3
+         z3zg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=softfail (google.com: domain of transitioning ghdpeoplesystem@ghd.com does not designate 160.34.236.28 as permitted sender) smtp.mailfrom=GHDPeopleSystem@ghd.com;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=ghd.com
+Return-Path: <GHDPeopleSystem@ghd.com>
+Received: from trxrelay11.taleo.net (trxrelay11.taleo.net. [160.34.236.28])
+        by mx.google.com with ESMTPS id 187si2452979jay.83.2020.05.27.14.47.05
+        for <yyk002016@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 May 2020 14:47:05 -0700 (PDT)
+Received-SPF: softfail (google.com: domain of transitioning ghdpeoplesystem@ghd.com does not designate 160.34.236.28 as permitted sender) client-ip=160.34.236.28;
+Authentication-Results: mx.google.com;
+       spf=softfail (google.com: domain of transitioning ghdpeoplesystem@ghd.com does not designate 160.34.236.28 as permitted sender) smtp.mailfrom=GHDPeopleSystem@ghd.com;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=ghd.com
+Received: from invalidemail.com by invalidemail.com; Wed, 27 May 2020 17:20:55 -0400 (EDT)
+From: Global Talent Acquisition Team - GHD <GHDPeopleSystem@ghd.com>
+To: yyk002016@gmail.com
+Message-ID: <1885256377.677.1590614455204@127.0.0.1>
+Subject: GHD - Data Scientist - Edison
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_676_1134527565.1590614455202"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Importance: normal
+Date: Wed, 27 May 2020 17:20:55 -0400 (EDT)
+
+------=_Part_676_1134527565.1590614455202
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title></title>
+</head>
+<body style='font-family: Arial, Times New Roman, Verdana, Sans-Serif; padding: 5px 5px 5px 5px; margin: 0px; border-style: none; background-color: #ffffff'>
+<div><p style="margin-top: 0px; margin-bottom: 0px;"><span style="font-family:arial"><span style="font-size:1em"><img src= "https://ghdltd.taleo.net/smartorg/CorrespondenceLogo.jss?logo=company_logo_02&instant=1590614197137"> </img><br />
+<br />
+</span></span></p></div><div><span style="font-family:arial"><span style="font-size:1em">Hi Yukun,<br />
+<br />
+Thank you for your application to&nbsp;</span></span><span style="font-family:arial"><span style="font-size:1em">Data Scientist - Edison at GHD.<br />
+<br />
+Whilst your experience and skills are impressive, after careful review, we have decided not to move forward with your application.<br />
+<br />
+We appreciate your interest in working with GHD and will retain your information in our database for future opportunities. We wish you all the best your job search and future endeavors.<br />
+<br />
+Many Thanks,<br />
+<br />
+</span></span></div><div><span style="font-family:arial"><span style="font-size:1em">Erin A Brammer<br />
+Erin.Brammer@ghd.com<br />
+GHD<br />
+</span></span></div><div><div>
+<div><br />
+<span style="font-size:0.833em">Please do not respond as this is an unattended mailbox.&nbsp;</span></div>
+<div><span style="font-size:0.833em">&nbsp;</span></div>
+<div><span style="font-family:arial"><span style="color:#008000"><span style="font-size:0.833em"><em>Please consider the environment before printing this email.</em></span></span></span></div>
+</div></div><div><p style="margin-top: 0px; margin-bottom: 0px;"><span style="font-family:Arial;font-size:1em">&nbsp;</span></p>
+<div>
+<div>&nbsp;</div>
+<div><span style="font-size:0.833em">The content of this email, including any attachments, is a confidential communication between a GHD group&nbsp;company or a related entity (or the sender if this email is a private communication) and the intended addressee, and is for the sole use of that intended addressee. If you are not the intended addressee, any use, interference with, disclosure or copying of this material is unauthorised and prohibited. If you have received this email in error please contact the sender immediately and then delete the message and any attachment(s). There is no warranty that this email is error, virus or defect free. This email is also subject to copyright. No part of it should be reproduced, adapted or communicated without the written consent of the copyright owner. If this is a private communication, it does not represent the views of GHD or a related entity.</span></div>
+<div><span style="font-size:0.833em">&nbsp;</span></div>
+<div><span style="font-size:0.833em">To protect GHD and staff, all email sent or received via GHD&#39;s systems is automatically filtered and logged and may be examined at the discretion of management, without prior notification to the sender or recipient.&nbsp;</span></div>
+<div>&nbsp;</div>
+<div><span style="font-size:0.833em">GHD respects your privacy. Our privacy policy can be accessed from our website: <a href="https://www.ghd.com/en/privacy-policy.aspx">https://www.ghd.com/en/privacy-policy.aspx</a></span></div>
+</div>
+<p style="margin-top: 0px; margin-bottom: 0px;"><span style="font-family:arial"><span style="font-size:1em">&nbsp;</span></span></p></div></body>
+</html>
+
+------=_Part_676_1134527565.1590614455202
+Content-Type: application/octet-stream; name=this_message_in_html.html
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=this_message_in_html.html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title></title>
+</head>
+<body style='font-family: Arial, Times New Roman, Verdana, Sans-Serif; padding: 5px 5px 5px 5px; margin: 0px; border-style: none; background-color: #ffffff'>
+<div><p style="margin-top: 0px; margin-bottom: 0px;"><span style="font-family:arial"><span style="font-size:1em"><img src= "https://ghdltd.taleo.net/smartorg/CorrespondenceLogo.jss?logo=company_logo_02&instant=1590614197137"> </img><br />
+<br />
+</span></span></p></div><div><span style="font-family:arial"><span style="font-size:1em">Hi Yukun,<br />
+<br />
+Thank you for your application to&nbsp;</span></span><span style="font-family:arial"><span style="font-size:1em">Data Scientist - Edison at GHD.<br />
+<br />
+Whilst your experience and skills are impressive, after careful review, we have decided not to move forward with your application.<br />
+<br />
+We appreciate your interest in working with GHD and will retain your information in our database for future opportunities. We wish you all the best your job search and future endeavors.<br />
+<br />
+Many Thanks,<br />
+<br />
+</span></span></div><div><span style="font-family:arial"><span style="font-size:1em">Erin A Brammer<br />
+Erin.Brammer@ghd.com<br />
+GHD<br />
+</span></span></div><div><div>
+<div><br />
+<span style="font-size:0.833em">Please do not respond as this is an unattended mailbox.&nbsp;</span></div>
+<div><span style="font-size:0.833em">&nbsp;</span></div>
+<div><span style="font-family:arial"><span style="color:#008000"><span style="font-size:0.833em"><em>Please consider the environment before printing this email.</em></span></span></span></div>
+</div></div><div><p style="margin-top: 0px; margin-bottom: 0px;"><span style="font-family:Arial;font-size:1em">&nbsp;</span></p>
+<div>
+<div>&nbsp;</div>
+<div><span style="font-size:0.833em">The content of this email, including any attachments, is a confidential communication between a GHD group&nbsp;company or a related entity (or the sender if this email is a private communication) and the intended addressee, and is for the sole use of that intended addressee. If you are not the intended addressee, any use, interference with, disclosure or copying of this material is unauthorised and prohibited. If you have received this email in error please contact the sender immediately and then delete the message and any attachment(s). There is no warranty that this email is error, virus or defect free. This email is also subject to copyright. No part of it should be reproduced, adapted or communicated without the written consent of the copyright owner. If this is a private communication, it does not represent the views of GHD or a related entity.</span></div>
+<div><span style="font-size:0.833em">&nbsp;</span></div>
+<div><span style="font-size:0.833em">To protect GHD and staff, all email sent or received via GHD&#39;s systems is automatically filtered and logged and may be examined at the discretion of management, without prior notification to the sender or recipient.&nbsp;</span></div>
+<div>&nbsp;</div>
+<div><span style="font-size:0.833em">GHD respects your privacy. Our privacy policy can be accessed from our website: <a href="https://www.ghd.com/en/privacy-policy.aspx">https://www.ghd.com/en/privacy-policy.aspx</a></span></div>
+</div>
+<p style="margin-top: 0px; margin-bottom: 0px;"><span style="font-family:arial"><span style="font-size:1em">&nbsp;</span></span></p></div></body>
+</html>
+
+------=_Part_676_1134527565.1590614455202--
+
+From 1667675950973545153@xxx Mon May 25 15:15:22 +0000 2020
+X-GM-THRID: 1667675950973545153
+X-Gmail-Labels: Archived,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:b011:0:0:0:0:0 with SMTP id z17csp4532695ive;
+        Mon, 25 May 2020 08:15:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSlZtpPsaTQ4Fr8YojevrjTH/Qz4vatItwypRa5fpkCry89H3Wmievsaa6Ew0knQ4hCDbJ
+X-Received: by 2002:a05:6830:19cb:: with SMTP id p11mr18973555otp.254.1590419722746;
+        Mon, 25 May 2020 08:15:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1590419722; cv=none;
+        d=google.com; s=arc-20160816;
+        b=nf1FTpY9yL08hPM08kZn1okNQDXBQOUNluIMF+pZECnhG0Y6SGBGrI0MN38Oe3PnAc
+         Q8QHYaZlExp7mOMV6QMhfAgiwb9wZ0woRfBJN9gvD+oGaBhQiHdR8ztbpXl812N4yoRP
+         1hdXv6g/NW0w4OJXdU78OeV3cpu+cnN/nLn9VPtM7clPwL7xOZJkzqcvq9IjHh5vkZDi
+         C4EAkqyfscy/0VTAy0qj+op5Jxbiy40tsC9P8oE2A+ySzMZrNx9dP5opWq7oDzt2hQVB
+         L4EbSjUsWLmdYUlDxZ4igbztG3e3KbVRF6JoSa0j6tCzTZM3NFyTtsrzS6oNu8+5Tfei
+         fEIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:date:list-unsubscribe
+         :list-unsubscribe-post:dkim-signature:dkim-signature;
+        bh=TUvnfPcFKitG7cJSvka8P/zQhK60+yUorzyapPuTTB4=;
+        b=BpmZVdMd8AHTExIwhGMZ5uS5aWQzmiNBn1ID/po+0Yq0/SxvsxGtU2nT0f2QNpw32v
+         BIqx9h11LIPjHk+iQQvgcuKbGiiPX67+AtPy+XZFvvYv12QLoQ5gD6MARj2jPKEbEKjF
+         c+MsPJmSgf0a0y7GDEbdUkk28+iw0c1TmSe/u7TA/tWnxPCZPVrUQwlmHnO01tVVmKa/
+         qRNV1ugHdP1ocKtaHEVzyxf2JK7pqdnLuT9U5iKpqX3XCtGrK25Zh1PJDOo0vmJoj5X1
+         6tABVWR20EtMJrOg7wBv5YbsplmqZx1PTOx3268jKVU7Zbu0G3XQCmnM+Y6wJfEsXE6g
+         mhEQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@asana.com header.s=smtp header.b=Gwje+hk8;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b="dSiOV/Zw";
+       spf=pass (google.com: domain of no-reply@asana.com designates 209.61.151.128 as permitted sender) smtp.mailfrom=no-reply@asana.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=asana.com
+Return-Path: <no-reply@asana.com>
+Received: from mail-151.128.greenhouse.io (mail-151.128.greenhouse.io. [209.61.151.128])
+        by mx.google.com with UTF8SMTPS id t14si7352831otp.260.2020.05.25.08.15.19
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 May 2020 08:15:22 -0700 (PDT)
+Received-SPF: pass (google.com: domain of no-reply@asana.com designates 209.61.151.128 as permitted sender) client-ip=209.61.151.128;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@asana.com header.s=smtp header.b=Gwje+hk8;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b="dSiOV/Zw";
+       spf=pass (google.com: domain of no-reply@asana.com designates 209.61.151.128 as permitted sender) smtp.mailfrom=no-reply@asana.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=asana.com
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=asana.com; q=dns/txt; s=smtp;
+ t=1590419722; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Date: List-Unsubscribe: List-Unsubscribe-Post:
+ X-Feedback-Id; bh=TUvnfPcFKitG7cJSvka8P/zQhK60+yUorzyapPuTTB4=; b=Gwje+hk8bNzuD1MWDdTV1lu5MsFxXYSwaSkWqZa63t85qlPQDN/r9+FzT7RjTz8Z0/hSABj3
+ x9xxi1zvKEgT2DOjbSnE2CMosyazEA/6vz0vDlBq3bLM6OzNOKByLuaotYZuMVUOw50eUaDo
+ k30R3NY2MIYnyZmZlNHUM91labM=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1590419722; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Date: List-Unsubscribe: List-Unsubscribe-Post:
+ X-Feedback-Id; bh=TUvnfPcFKitG7cJSvka8P/zQhK60+yUorzyapPuTTB4=; b=dSiOV/ZweKBcTMO4273yhysJQVbjW63tUgl78wPP5L/uEMDEUY4AHyIZSVuYNIaQeO/cBf80
+ 2Doekq8fBcsTdHB6JzGUDekV1gtC15t7a4pXDM4IwAcW+skWwjeobdxQyFo5FHhJmmMQglEA
+ TwyHtDbMmkaPFJo+cpFQSCThjhE=
+X-Feedback-Id: 58a412b7aa3de620116f543f:mailgun
+X-Mailgun-Sending-Ip: 209.61.151.128
+X-Mailgun-Sid: WyJlZTM3ZiIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgIjA0MjVlZCJd
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+List-Unsubscribe: <https://link.mailgun.com/u/eJwdjEsOwiAQQE8jSzIMH2XBitYLeIIZhlpiWxOti95eNG_58p4kcOirqJYQEMCjNx2I2ujzMIYw5CtEiNlc8OSA3rSRLs9VzWkCZoPsqrfC1VlmKlxKQW9DmByqVzqOB_SrCT29r9SWf7qnW5mrfJYqmTZpQnsdf_YLdXgpgQ>
+Received: by luna.mailgun.net with HTTP; Mon, 25 May 2020 15:15:09 +0000
+Date: Mon, 25 May 2020 15:15:09 +0000
+Message-Id: <20200525151509.1.7DE66DCF0909C182@asana.com>
+X-Mailgun-Tag: ScheduledCandidateEmail
+X-Mailgun-Native-Send: true
+To: yyk002016@gmail.com
+From: no-reply@asana.com
+Subject: Your application to the Data Scientist role at Asana
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="2ce86ebd2a2e470db31937611ab5e86f"
+
+--2ce86ebd2a2e470db31937611ab5e86f
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+
+Hi Yukun,
+
+Thank you for applying to Asana. We appreciate your interest in our mission=
+ and for considering us as you take the next steps in your career. Although=
+ the team was impressed with your experience, we decided not to move forwar=
+d with your candidacy at this time.
+
+Please don=E2=80=99t hesitate to stay in touch and reach out in the future =
+if we have another role you feel is a good fit.
+
+All the best,
+The Asana Talent Acquisition Team
+--2ce86ebd2a2e470db31937611ab5e86f
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+<div>Hi Yukun,</div>
+<div>&nbsp;</div>
+<div>Thank you for applying to Asana. We appreciate your interest in our mission and for considering us as you take the next steps in your career. Although the team was impressed with your experience, we decided not to move forward with your candidacy at this time.</div>
+<div>&nbsp;</div>
+<div>Please don&rsquo;t hesitate to stay in touch and reach out in the future if we have another role you feel is a good fit.</div>
+<div><br />All the best,</div>
+<div>The Asana Talent Acquisition Team</div>
+<p>&nbsp;</p>
+<div>&nbsp;</div>
+--2ce86ebd2a2e470db31937611ab5e86f--
+
+From 1667220696923775188@xxx Wed May 20 14:39:18 +0000 2020
+X-GM-THRID: 1667220696923775188
+X-Gmail-Labels: Archived,Important,Opened,Category Updates,rej
+Delivered-To: yyk002016@gmail.com
+Received: by 2002:a4f:b011:0:0:0:0:0 with SMTP id z17csp578009ive;
+        Wed, 20 May 2020 07:39:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx6EEF0YZD5NqtIkhSlpDbQC1PO07QW3TFBJPcsneLMAaq5bp3s+oqwVDt80j6Ng9mEh5FS
+X-Received: by 2002:a05:6602:2c45:: with SMTP id x5mr3591197iov.80.1589985558224;
+        Wed, 20 May 2020 07:39:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1589985558; cv=none;
+        d=google.com; s=arc-20160816;
+        b=nzl9e1brgo0s1aX9TTquT6a44cVGVh39SqKf05bSxWn14FXU4QRM354nSgd7UMASgg
+         XP0mNj7lSbjtP6m7+g86hfs6U5FtE+aRBRffe9XIDrlv7mLxNFKbELSDt7zX0jDYIaDH
+         dt5ersJjd1zlWRuuAfKb7CRL52eke6pHw3LOIYSv3iuCZCLsN9m4J9m+fnMeu8gzXBij
+         +jJ/e7Qcb+PX8AKNUosjT2bOQ4CD5v5NMCdMSjZZSKVPK2qynAOPqCaWfdu0MiDmG9NL
+         WZHzGMk92YDAQFNDJUXAJzK35aGhjwjirVC+9NTo5C9Z5ufDMhe94B1ubFnRjXMvzA9d
+         tDEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:from:to:message-id:sender:date
+         :list-unsubscribe:list-unsubscribe-post:dkim-signature
+         :dkim-signature;
+        bh=HrB+gXJ09pzCLLPP10ZlPL4qSUtEaZ7j9v4OF1mhIqw=;
+        b=EKUHymA9ohJhvxdK1da0W6qRhVE0USNtPvY9kRR+rYTHihMhHX1erCU2xH74Fk7G7J
+         NYySgYW37dHvZ3xcr7vltHc0PG9hdtFRWX5/wNBUBJrt4PteIqu6lLabH/ibReqOF3k1
+         tByoipIvBm537dJ7u33FYQybsI5I1/A/E/D4duAZ4bjyw9ztBX96RWC+/k0VQ72ZbsrL
+         0LduTItT79szNrI5fwLB+dlNJvw/DtHQxbawLdm5hhGxBEoxD0JucCSCByusFHucLqHC
+         a7DfYm3cD8Fu0WxNCuan3768WKRXOa2MIOEEPTd5uV7dWt96kmId+dfCRS6HLfktGNPQ
+         1bog==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@greenhouse.io header.s=mailgun header.b="RGVzWg/H";
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=k2zZC5mu;
+       spf=pass (google.com: domain of bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io designates 192.237.158.85 as permitted sender) smtp.mailfrom="bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=greenhouse.io
+Return-Path: <bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io>
+Received: from mail-158-85.greenhouse.io (mail-158-85.greenhouse.io. [192.237.158.85])
+        by mx.google.com with UTF8SMTPS id q14si2025140ilj.51.2020.05.20.07.39.13
+        for <yyk002016@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 May 2020 07:39:18 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io designates 192.237.158.85 as permitted sender) client-ip=192.237.158.85;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@greenhouse.io header.s=mailgun header.b="RGVzWg/H";
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=k2zZC5mu;
+       spf=pass (google.com: domain of bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io designates 192.237.158.85 as permitted sender) smtp.mailfrom="bounce+b43c19.e5c04-yyk002016=gmail.com@greenhouse.io";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=greenhouse.io
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=greenhouse.io; q=dns/txt;
+ s=mailgun; t=1589985558; h=Content-Type: Mime-Version: Subject: From:
+ To: Message-Id: Sender: Date: List-Unsubscribe: List-Unsubscribe-Post:
+ X-Feedback-Id; bh=HrB+gXJ09pzCLLPP10ZlPL4qSUtEaZ7j9v4OF1mhIqw=; b=RGVzWg/H82R06Hr32xqpWjkzNkmDusOhrag03IYRU4nbcdLtexUqlf22Xki8ba5bYzFDc2HV
+ 1MJtZ188g9TjrmA1haKSg12d0uUFM2M2ONPMHu5IwZG6QrQSYmu6NwjesiEHuZKoWRxF/Ms9
+ iwk+aiWIts2ptVGPdez26reiF6c0ssYCSfirrIvkqd2ZK0Em7Zu4ppFsAjNWAwA6nl90YHPh
+ 4BlL/x1FaxLsYb54//j2JTN0R2mp04Ct0TTCASCEfbI4ssAHXdT7ewYR+uZzBUGTdhzVQv7A
+ ISgy9LvugymEHd6VH6iXz2r3O1+IHhffJmSO5S3KRWeIj0ymZhdzeQ==
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg;
+ t=1589985558; h=Content-Type: Mime-Version: Subject: From: To:
+ Message-Id: Sender: Date: List-Unsubscribe: List-Unsubscribe-Post:
+ X-Feedback-Id; bh=HrB+gXJ09pzCLLPP10ZlPL4qSUtEaZ7j9v4OF1mhIqw=; b=k2zZC5musYNNsOoaK32MSFNE0ZfhgH1jN0gfr8pRG7APy0y7jZsCFdofwZOXeGMw4CjGeDRM
+ AO7qZOKbKzN/6Qn8IQMsy2OgVajYJd4nHQmNj5XinDkeFkBe8ezqp8vGw/Z2ThefI+t+Q0Ak
+ WBTLlZNQGRqfVJDX64K9kBRyISc=
+X-Feedback-Id: 546d09648032675920a31d41:mailgun
+X-Mailgun-Sending-Ip: 192.237.158.85
+X-Mailgun-Sid: WyI0Nzc2OCIsICJ5eWswMDIwMTZAZ21haWwuY29tIiwgImU1YzA0Il0=
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+List-Unsubscribe: <https://link.mailgun.com/u/eJwVzEsOgyAURuHVlCH5gQvqgEkfbqAruIFrJVVJrA7cfXV88p0cxSeQKtHCAt7CkOsAbXR_b2B6oKdnCwp0I3xWkWWs-090qWqMoWO0wmlI7SnZcpMGF8R13pLzNKg1HscX59mEi89cJp3qrLb4TqPkfZL84CWXzJu8rvoH6HcqHQ>
+Received: by luna.mailgun.net with HTTP; Wed, 20 May 2020 14:39:00 +0000
+Date: Wed, 20 May 2020 14:39:00 +0000
+Sender: no-reply@greenhouse.io
+Message-Id: <20200520143900.1.FB701F00F4D80464@greenhouse.io>
+X-Mailgun-Tag: ScheduledCandidateEmail
+To: yyk002016@gmail.com
+From: no-reply@greenhouse.io
+Subject: Update from Mindstrong
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="16fd3b5cd87b4827b2b7e201bdd7e83b"
+
+--16fd3b5cd87b4827b2b7e201bdd7e83b
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ascii"
+Mime-Version: 1.0
+
+Hi Yukun,
+
+Thank you for your interest in Mindstrong! We appreciate you taking the time to reach out to us about the Data Scientist role, but after careful review we have decided not to move forward at this time.
+
+As a growing company, our needs are constantly changing so please feel free to reach out again if you see new roles on the website that interest you.
+
+We wish you luck in your search!
+- Mindstrong Recruiting Team
+--16fd3b5cd87b4827b2b7e201bdd7e83b
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="ascii"
+Mime-Version: 1.0
+
+<p><img src="https://mindstrong-logos.s3-us-west-2.amazonaws.com/Mindstrong.png" width="274" height="42" /><br /><br />Hi Yukun,</p>
+<p>Thank you for your interest in Mindstrong! We appreciate you taking the time to reach out to us about the Data Scientist role, but after careful review we have decided not to move forward at this time.&nbsp;</p>
+<p>As a growing company, our needs are constantly changing so please feel free to reach out again if you see new roles on the website that interest you.</p>
+<p><br />We wish you luck in your search!<br />- Mindstrong Recruiting Team&nbsp;</p>
+--16fd3b5cd87b4827b2b7e201bdd7e83b--
+
