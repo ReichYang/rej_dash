@@ -1,20 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
-
-# In[17]:
-
-
 
   
 def important_words(metric, ranks):
-
-  
-
-
 #     stop = list(stopwords.words('english'))
 #     stop.extend(['yukun','yukun yang','yang','data','scientist'])
   
@@ -140,107 +129,6 @@ def make_circos(test_co):
 # In[25]:
 
 
-import gensim
-import spacy
-def sent_to_words(sentences):
-    for sentence in sentences:
-        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
-def remove_stopwords(texts):
-
-    new_docs=[]
-    for doc in texts:
-        new_docs.append([word for word in doc if word not in stop])
-    return new_docs    
-    
-
-def make_bigrams(texts):
-    return [bigram_mod[doc] for doc in texts]
-
-def make_trigrams(texts):
-    return [trigram_mod[bigram_mod[doc]] for doc in texts]
-
-def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
-    """https://spacy.io/api/annotation"""
-    texts_out = []
-    for sent in texts:
-        doc = nlp(" ".join(sent)) 
-        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
-    return texts_out
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[26]:
-
-
-data=email_df[email_df.cleaned.notna()].cleaned.values.tolist()
-
-
-# In[27]:
-
-
-data_words = list(sent_to_words(data))
-
-
-# In[28]:
-
-
-bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
-trigram = gensim.models.Phrases(bigram[data_words], threshold=100)  
-
-bigram_mod = gensim.models.phrases.Phraser(bigram)
-trigram_mod = gensim.models.phrases.Phraser(trigram)
-
-
-# In[29]:
-
-
-# Remove Stop Words
-data_words_nostops = remove_stopwords(data_words)
-
-# Form Bigrams
-data_words_bigrams = make_bigrams(data_words_nostops)
-
-
-# In[30]:
-
-try:
-	nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
-except:
-	import en_core_web_sm
-	nlp = en_core_web_sm.load()
-
-# Do lemmatization keeping only noun, adj, vb, adv
-data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
-
-# print(data_lemmatized[:1])
-
-
-# In[31]:
-
-
-import gensim
-import gensim.corpora as corpora
-from gensim.utils import simple_preprocess
-from gensim.models import CoherenceModel
-# Create Dictionary
-id2word = corpora.Dictionary(data_lemmatized)
-
-# Create Corpus
-texts = data_lemmatized
-
-# Term Document Frequency
-corpus = [id2word.doc2bow(text) for text in texts]
 
 # View
 # print(corpus[:1])
@@ -249,49 +137,7 @@ corpus = [id2word.doc2bow(text) for text in texts]
 # In[32]:
 
 
-def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=3):
-    """
-    Compute c_v coherence for various number of topics
 
-    Parameters:
-    ----------
-    dictionary : Gensim dictionary
-    corpus : Gensim corpus
-    texts : List of input texts
-    limit : Max num of topics
-
-    Returns:
-    -------
-    model_list : List of LDA topic models
-    coherence_values : Coherence values corresponding to the LDA model with respective number of topics
-    """
-    coherence_values = []
-    model_list = []
-    for num_topics in range(start, limit, step):
-        model = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=num_topics, id2word=id2word,random_state=2020)
-        model_list.append(model)
-        coherencemodel = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='c_v')
-        coherence_values.append(coherencemodel.get_coherence())
-
-    return model_list, coherence_values
-
-
-# In[77]:
-
-
-model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=2, limit=40, step=2)
-
-
-# In[78]:
-
-
-x=range(2,40,2)
-
-
-# In[79]:
-
-
-choose_k=pd.DataFrame({'# of Topics':x,'coherence':coherence_values})
 
 
 # In[ ]:
@@ -1661,6 +1507,139 @@ if __name__ == '__main__':
     email_df['extracted']=email_df.text.apply(extract_text)
     email_df['cleaned']=email_df.extracted.apply(clean_text)
 
+
+import gensim
+import spacy
+def sent_to_words(sentences):
+    for sentence in sentences:
+        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
+def remove_stopwords(texts):
+
+    new_docs=[]
+    for doc in texts:
+        new_docs.append([word for word in doc if word not in stop])
+    return new_docs    
+    
+
+def make_bigrams(texts):
+    return [bigram_mod[doc] for doc in texts]
+
+def make_trigrams(texts):
+    return [trigram_mod[bigram_mod[doc]] for doc in texts]
+
+def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+    """https://spacy.io/api/annotation"""
+    texts_out = []
+    for sent in texts:
+        doc = nlp(" ".join(sent)) 
+        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+    return texts_out
+
+
+
+    data=email_df[email_df.cleaned.notna()].cleaned.values.tolist()
+
+
+    # In[27]:
+
+
+    data_words = list(sent_to_words(data))
+
+
+    # In[28]:
+
+
+    bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
+    trigram = gensim.models.Phrases(bigram[data_words], threshold=100)  
+
+    bigram_mod = gensim.models.phrases.Phraser(bigram)
+    trigram_mod = gensim.models.phrases.Phraser(trigram)
+
+
+    # In[29]:
+
+
+    # Remove Stop Words
+    data_words_nostops = remove_stopwords(data_words)
+
+    # Form Bigrams
+    data_words_bigrams = make_bigrams(data_words_nostops)
+
+
+    # In[30]:
+
+    try:
+        nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+    except:
+        import en_core_web_sm
+        nlp = en_core_web_sm.load()
+
+    # Do lemmatization keeping only noun, adj, vb, adv
+    data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
+
+    # print(data_lemmatized[:1])
+
+
+    # In[31]:
+
+
+    import gensim
+    import gensim.corpora as corpora
+    from gensim.utils import simple_preprocess
+    from gensim.models import CoherenceModel
+    # Create Dictionary
+    id2word = corpora.Dictionary(data_lemmatized)
+
+    # Create Corpus
+    texts = data_lemmatized
+
+    # Term Document Frequency
+    corpus = [id2word.doc2bow(text) for text in texts]
+
+
+    def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=3):
+    """
+    Compute c_v coherence for various number of topics
+
+    Parameters:
+    ----------
+    dictionary : Gensim dictionary
+    corpus : Gensim corpus
+    texts : List of input texts
+    limit : Max num of topics
+
+    Returns:
+    -------
+    model_list : List of LDA topic models
+    coherence_values : Coherence values corresponding to the LDA model with respective number of topics
+    """
+    coherence_values = []
+    model_list = []
+    for num_topics in range(start, limit, step):
+        model = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=num_topics, id2word=id2word,random_state=2020)
+        model_list.append(model)
+        coherencemodel = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='c_v')
+        coherence_values.append(coherencemodel.get_coherence())
+
+    return model_list, coherence_values
+
+
+# In[77]:
+
+
+    model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=2, limit=40, step=2)
+
+
+    # In[78]:
+
+
+    x=range(2,40,2)
+
+
+    # In[79]:
+
+
+    choose_k=pd.DataFrame({'# of Topics':x,'coherence':coherence_values})
 
 
 
