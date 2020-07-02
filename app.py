@@ -4,282 +4,6 @@
 # In[1]:
 
 
-import mailbox
-import email.utils
-
-import nltk
-from nltk.corpus import stopwords
-nltk.download('stopwords')
-# In[2]:
-
-
-import pandas as pd
-import numpy as np
-import datetime
-import plotly.express as px
-
-
-# In[3]:
-
-
-mbox = mailbox.mbox('Rej.mbox')
-mbox2 = mailbox.mbox('rej2.mbox')
-
-
-# # Email Processing
-
-# In[4]:
-
-
-import mailbox
-import bs4
-
-def get_html_text(html):
-    try:
-        return bs4.BeautifulSoup(html, "html5lib").body.get_text(' ', strip=True)
-    except AttributeError: # message contents empty
-        return None
-
-class GmailMboxMessage():
-    def __init__(self, email_data):
-        if not isinstance(email_data, mailbox.mboxMessage):
-            raise TypeError('Variable must be type mailbox.mboxMessage')
-        self.email_data = email_data
-        self.labels= self.date= self.efrom= self.eto= self.subject= self.text=None
-        
-
-    def parse_email(self):
-        email_labels = self.email_data['X-Gmail-Labels']
-        email_date = self.email_data['Date']
-        email_from = self.email_data['From']
-        email_to = self.email_data['To']
-        email_subject = self.email_data['Subject']
-        email_text = self.read_email_payload() 
-        
-        self.labels=email_labels
-        self.date=email_date
-        self.efrom=email_from
-        self.eto=email_to
-        self.subject=email_subject
-        self.text=email_text
-        
-
-    def read_email_payload(self):
-        email_payload = self.email_data.get_payload()
-        if self.email_data.is_multipart():
-            email_messages = list(self._get_email_messages(email_payload))
-        else:
-            email_messages = [email_payload]
-        return [self._read_email_text(msg) for msg in email_messages]
-
-    def _get_email_messages(self, email_payload):
-        for msg in email_payload:
-            if isinstance(msg, (list,tuple)):
-                for submsg in self._get_email_messages(msg):
-                    yield submsg
-            elif msg.is_multipart():
-                for submsg in self._get_email_messages(msg.get_payload()):
-                    yield submsg
-            else:
-                yield msg
-
-    def _read_email_text(self, msg):
-        content_type = 'NA' if isinstance(msg, str) else msg.get_content_type()
-        encoding = 'NA' if isinstance(msg, str) else msg.get('Content-Transfer-Encoding', 'NA')
-        if 'text/plain' in content_type and 'base64' not in encoding:
-            msg_text = msg.get_payload()
-        elif 'text/html' in content_type and 'base64' not in encoding:
-            msg_text = get_html_text(msg.get_payload())
-        elif content_type == 'NA':
-            msg_text = get_html_text(msg)
-        else:
-            msg_text = None
-        return (content_type, encoding, msg_text)
-
-
-# In[5]:
-
-
-emails=[]
-num_entries = len(mbox)
-for idx, email_obj in enumerate(mbox):
-    email_data = GmailMboxMessage(email_obj)
-    email_data.parse_email()
-    emails.append(email_data)
-#     print('Parsing email {0} of {1}'.format(idx, num_entries))
-
-
-# In[6]:
-
-
-num_entries = len(mbox2)
-for idx, email_obj in enumerate(mbox2):
-    email_data = GmailMboxMessage(email_obj)
-    email_data.parse_email()
-    emails.append(email_data)
-#     print('Parsing email {0} of {1}'.format(idx, num_entries))
-
-
-# In[7]:
-
-
-# construct the dataframe
-email_df= pd.DataFrame()
-for e in emails:
-    email_df=email_df.append([{'date':e.date,'from':e.efrom,'to':e.eto,'subject':e.subject,'text':e.text}])
-
-
-# In[8]:
-
-
-from pytz import timezone
-
-
-# In[9]:
-
-
-from dateutil.parser import parse
-from datetime import datetime as dt
-
-
-# In[10]:
-
-
-email_df['date_n']=pd.to_datetime(email_df.date)
-
-
-# In[11]:
-
-
-email_df['date_es']=email_df['date_n'].apply(lambda x: x.astimezone(timezone('US/Eastern')))
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[12]:
-
-
-email_df['weekdays']=email_df.date_es.apply(lambda x: dt.strftime(x, "%A"))
-
-
-# In[13]:
-
-
-email_df['hour']=email_df.date_es.apply(
-    lambda x: dt.strftime(x, "%I %p")
-) 
-
-
-# In[ ]:
-
-
-
-
-
-# In[14]:
-
-
-day_list = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-]
-
-
-# In[ ]:
-
-
-
-
-
-# # Text Mining
-
-# In[15]:
-
-
-import re, string
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-
-import nltk
-from nltk.corpus import stopwords
-nltk.download('stopwords')
-
-
-stop = list(stopwords.words('english'))
-stop.extend(['yukun','yukun yang','yang','data','scientist'])
-
-def extract_text(text_list):
-    
-    tags=[component[0] for component in text_list]
-    
-    real_content=None
-    if 'text/html' in tags:
-        ind=[component[0] for component in text_list].index('text/html')
-        real_content=text_list[ind][-1]
-        if real_content=='None':
-            real_content=None
-
-    elif 'text/plain' in tags:
-        ind=[component[0] for component in text_list].index('text/plain')
-        real_content=text_list[ind][-1]
-    elif 'NA' in tags:
-        ind=[component[0] for component in text_list].index('NA')
-        real_content=text_list[ind][-1]
-    
-    if (real_content is not None):
-            if len(real_content)>10000:
-                real_content=None
-    
-    return real_content
-  
-        
-def clean_text(text):
-    
-    if text is not None:
-    
-        text=re.sub('=\n', '', text) 
-
-        text=re.sub('\S*@\S*\s?', '',  text)
-
-        text=' '.join(word.strip(string.punctuation) for word in text.split())
-
-        text=re.sub(r'((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*', '', text, flags=re.MULTILINE)
-
-    #     text=re.sub(r'\..*\..* ?', '', text, flags=re.MULTILINE)
-
-        text=re.sub(r"\d+", "", text)
-
-        text=re.sub(r"={1}.{2}", "", text)
-        
-        text=text.replace('size','').replace('text size', '').replace('adjust','').replace('td','')
-        
-        
-        
-        return text
-    else:
-        return None
-
-
-# In[16]:
-
-
-email_df['extracted']=email_df.text.apply(extract_text)
-email_df['cleaned']=email_df.extracted.apply(clean_text)
-
 
 # In[17]:
 
@@ -1075,7 +799,6 @@ def seperate(f):
 import dash
 import plotly.express as px
 from jupyter_dash import JupyterDash
-import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -1661,7 +1384,288 @@ def update_output_from_picker(start_date, end_date, weekdays, time, click):
 
 
 if __name__ == '__main__':
-    app.run_server(port=8070)
+    
+    import mailbox
+    import email.utils
+
+    import nltk
+    from nltk.corpus import stopwords
+    nltk.download('stopwords')
+    # In[2]:
+
+
+    import pandas as pd
+    import numpy as np
+    import datetime
+    import plotly.express as px
+
+
+    # In[3]:
+
+
+    mbox = mailbox.mbox('Rej.mbox')
+    mbox2 = mailbox.mbox('rej2.mbox')
+
+
+    # # Email Processing
+
+    # In[4]:
+
+
+    import mailbox
+    import bs4
+
+    def get_html_text(html):
+        try:
+            return bs4.BeautifulSoup(html, "html5lib").body.get_text(' ', strip=True)
+        except AttributeError: # message contents empty
+            return None
+
+    class GmailMboxMessage():
+        def __init__(self, email_data):
+            if not isinstance(email_data, mailbox.mboxMessage):
+                raise TypeError('Variable must be type mailbox.mboxMessage')
+            self.email_data = email_data
+            self.labels= self.date= self.efrom= self.eto= self.subject= self.text=None
+            
+
+        def parse_email(self):
+            email_labels = self.email_data['X-Gmail-Labels']
+            email_date = self.email_data['Date']
+            email_from = self.email_data['From']
+            email_to = self.email_data['To']
+            email_subject = self.email_data['Subject']
+            email_text = self.read_email_payload() 
+            
+            self.labels=email_labels
+            self.date=email_date
+            self.efrom=email_from
+            self.eto=email_to
+            self.subject=email_subject
+            self.text=email_text
+            
+
+        def read_email_payload(self):
+            email_payload = self.email_data.get_payload()
+            if self.email_data.is_multipart():
+                email_messages = list(self._get_email_messages(email_payload))
+            else:
+                email_messages = [email_payload]
+            return [self._read_email_text(msg) for msg in email_messages]
+
+        def _get_email_messages(self, email_payload):
+            for msg in email_payload:
+                if isinstance(msg, (list,tuple)):
+                    for submsg in self._get_email_messages(msg):
+                        yield submsg
+                elif msg.is_multipart():
+                    for submsg in self._get_email_messages(msg.get_payload()):
+                        yield submsg
+                else:
+                    yield msg
+
+        def _read_email_text(self, msg):
+            content_type = 'NA' if isinstance(msg, str) else msg.get_content_type()
+            encoding = 'NA' if isinstance(msg, str) else msg.get('Content-Transfer-Encoding', 'NA')
+            if 'text/plain' in content_type and 'base64' not in encoding:
+                msg_text = msg.get_payload()
+            elif 'text/html' in content_type and 'base64' not in encoding:
+                msg_text = get_html_text(msg.get_payload())
+            elif content_type == 'NA':
+                msg_text = get_html_text(msg)
+            else:
+                msg_text = None
+            return (content_type, encoding, msg_text)
+
+
+    # In[5]:
+
+
+    emails=[]
+    num_entries = len(mbox)
+    for idx, email_obj in enumerate(mbox):
+        email_data = GmailMboxMessage(email_obj)
+        email_data.parse_email()
+        emails.append(email_data)
+    #     print('Parsing email {0} of {1}'.format(idx, num_entries))
+
+
+    # In[6]:
+
+
+    num_entries = len(mbox2)
+    for idx, email_obj in enumerate(mbox2):
+        email_data = GmailMboxMessage(email_obj)
+        email_data.parse_email()
+        emails.append(email_data)
+    #     print('Parsing email {0} of {1}'.format(idx, num_entries))
+
+
+    # In[7]:
+
+
+    # construct the dataframe
+    email_df= pd.DataFrame()
+    for e in emails:
+        email_df=email_df.append([{'date':e.date,'from':e.efrom,'to':e.eto,'subject':e.subject,'text':e.text}])
+
+
+    # In[8]:
+
+
+    from pytz import timezone
+
+
+    # In[9]:
+
+
+    from dateutil.parser import parse
+    from datetime import datetime as dt
+
+
+    # In[10]:
+
+
+    email_df['date_n']=pd.to_datetime(email_df.date)
+
+
+    # In[11]:
+
+
+    email_df['date_es']=email_df['date_n'].apply(lambda x: x.astimezone(timezone('US/Eastern')))
+
+
+    # In[ ]:
+
+
+
+
+
+    # In[ ]:
+
+
+
+
+
+    # In[12]:
+
+
+    email_df['weekdays']=email_df.date_es.apply(lambda x: dt.strftime(x, "%A"))
+
+
+    # In[13]:
+
+
+    email_df['hour']=email_df.date_es.apply(
+        lambda x: dt.strftime(x, "%I %p")
+    ) 
+
+
+    # In[ ]:
+
+
+
+
+
+    # In[14]:
+
+
+    day_list = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]
+
+
+    # In[ ]:
+
+
+
+
+
+    # # Text Mining
+
+    # In[15]:
+
+
+    import re, string
+    from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+
+    import nltk
+    from nltk.corpus import stopwords
+    nltk.download('stopwords')
+
+
+    stop = list(stopwords.words('english'))
+    stop.extend(['yukun','yukun yang','yang','data','scientist'])
+
+    def extract_text(text_list):
+        
+        tags=[component[0] for component in text_list]
+        
+        real_content=None
+        if 'text/html' in tags:
+            ind=[component[0] for component in text_list].index('text/html')
+            real_content=text_list[ind][-1]
+            if real_content=='None':
+                real_content=None
+
+        elif 'text/plain' in tags:
+            ind=[component[0] for component in text_list].index('text/plain')
+            real_content=text_list[ind][-1]
+        elif 'NA' in tags:
+            ind=[component[0] for component in text_list].index('NA')
+            real_content=text_list[ind][-1]
+        
+        if (real_content is not None):
+                if len(real_content)>10000:
+                    real_content=None
+        
+        return real_content
+    
+            
+    def clean_text(text):
+        
+        if text is not None:
+        
+            text=re.sub('=\n', '', text) 
+
+            text=re.sub('\S*@\S*\s?', '',  text)
+
+            text=' '.join(word.strip(string.punctuation) for word in text.split())
+
+            text=re.sub(r'((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*', '', text, flags=re.MULTILINE)
+
+        #     text=re.sub(r'\..*\..* ?', '', text, flags=re.MULTILINE)
+
+            text=re.sub(r"\d+", "", text)
+
+            text=re.sub(r"={1}.{2}", "", text)
+            
+            text=text.replace('size','').replace('text size', '').replace('adjust','').replace('td','')
+            
+            
+            
+            return text
+        else:
+            return None
+
+
+# In[16]:
+
+
+    email_df['extracted']=email_df.text.apply(extract_text)
+    email_df['cleaned']=email_df.extracted.apply(clean_text)
+
+
+
+
+
+    app.run_server()
 
 
 # In[ ]:
