@@ -1485,32 +1485,32 @@ if __name__ == '__main__':
     email_df['cleaned']=email_df.extracted.apply(clean_text)
 
 
-import gensim
-import spacy
-def sent_to_words(sentences):
-    for sentence in sentences:
-        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
-def remove_stopwords(texts):
+    import gensim
+    import spacy
+    def sent_to_words(sentences):
+        for sentence in sentences:
+            yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
+    def remove_stopwords(texts):
 
-    new_docs=[]
-    for doc in texts:
-        new_docs.append([word for word in doc if word not in stop])
-    return new_docs    
-    
+        new_docs=[]
+        for doc in texts:
+            new_docs.append([word for word in doc if word not in stop])
+        return new_docs    
+        
 
-def make_bigrams(texts):
-    return [bigram_mod[doc] for doc in texts]
+    def make_bigrams(texts):
+        return [bigram_mod[doc] for doc in texts]
 
-def make_trigrams(texts):
-    return [trigram_mod[bigram_mod[doc]] for doc in texts]
+    def make_trigrams(texts):
+        return [trigram_mod[bigram_mod[doc]] for doc in texts]
 
-def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
-    """https://spacy.io/api/annotation"""
-    texts_out = []
-    for sent in texts:
-        doc = nlp(" ".join(sent)) 
-        texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
-    return texts_out
+    def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+        """https://spacy.io/api/annotation"""
+        texts_out = []
+        for sent in texts:
+            doc = nlp(" ".join(sent)) 
+            texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+        return texts_out
 
 
 
