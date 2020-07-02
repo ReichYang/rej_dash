@@ -1014,7 +1014,7 @@ def cal_range(value):
 app = dash.Dash(__name__, external_stylesheets=["https://codepen.io/chriddyp/pen/bWLwgP.css",
                                                 "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
 # app = JupyterDash(__name__,external_stylesheets=["https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
-
+server = app.server
 
 app.layout = html.Div(
     id="app-container",
@@ -1573,7 +1573,7 @@ def update_output_from_picker(start_date, end_date, weekdays, time, click):
 
 if __name__ == '__main__':
 
-    app.run_server()
+    app.run_server(port=8050,debug=True)
 
 
 # In[ ]:
