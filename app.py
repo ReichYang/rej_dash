@@ -7,7 +7,9 @@
 import mailbox
 import email.utils
 
-
+import nltk
+from nltk.corpus import stopwords
+nltk.download('stopwords')
 # In[2]:
 
 
@@ -287,9 +289,7 @@ email_df['cleaned']=email_df.extracted.apply(clean_text)
 def important_words(metric, ranks):
 
   
-  import nltk
-  from nltk.corpus import stopwords
-  nltk.download('stopwords')
+
 
 #     stop = list(stopwords.words('english'))
 #     stop.extend(['yukun','yukun yang','yang','data','scientist'])
