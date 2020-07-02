@@ -490,8 +490,11 @@ data_words_bigrams = make_bigrams(data_words_nostops)
 
 # In[30]:
 
-
-nlp = spacy.load('en', disable=['parser', 'ner'])
+try:
+	nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+except:
+	import en_core_web_sm
+	nlp = en_core_web_sm.load()
 
 # Do lemmatization keeping only noun, adj, vb, adv
 data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
