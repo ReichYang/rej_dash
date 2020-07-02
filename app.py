@@ -1,64 +1,461 @@
 #!/usr/bin/env python
 # coding: utf-8
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+import string
+import re
+from datetime import datetime as dt
+from dateutil.parser import parse
+from pytz import timezone
+import bs4
+import datetime
+import numpy as np
+import pandas as pd
+import textblob
+import lexicalrichness
+import textstat
+import dash_bio as dashbio
+import dash_table
+from dash import no_update
+from dash.dependencies import Input, Output
+import dash_html_components as html
+import dash_core_components as dcc
+from jupyter_dash import JupyterDash
+import plotly.express as px
+import dash
+import plotly.graph_objects as go
+import plotly.tools as tls
+import itertools
+from tick.plot import plot_point_process
+from tick.hawkes import (SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp,
+                         HawkesEM, SimuHawkesSumExpKernels, HawkesSumExpKern, HawkesExpKern)
+from collections import Counter
+from nltk.collocations import *
+import nltk
+import mailbox
+import email.utils
+
+import nltk
+from nltk.corpus import stopwords
+nltk.download('stopwords')
+# In[2]:
+
+   # In[3]:
+
+mbox = mailbox.mbox('Rej.mbox')
+mbox2 = mailbox.mbox('rej2.mbox')
+     # # Email Processing
+
+     # In[4]:
 
 
-  
+def get_html_text(html):
+            try:
+                return bs4.BeautifulSoup(html, "html5lib").body.get_text(' ', strip=True)
+            except AttributeError:  # message contents empty
+                return None
+
+
+class GmailMboxMessage():
+            def __init__(self, email_data):
+                if not isinstance(email_data, mailbox.mboxMessage):
+                    raise TypeError(
+                        'Variable must be type mailbox.mboxMessage')
+                self.email_data = email_data
+                self.labels = self.date = self.efrom = self.eto = self.subject = self.text = None
+
+            def parse_email(self):
+                email_labels = self.email_data['X-Gmail-Labels']
+                email_date = self.email_data['Date']
+                email_from = self.email_data['From']
+                email_to = self.email_data['To']
+                email_subject = self.email_data['Subject']
+                email_text = self.read_email_payload()
+
+                self.labels = email_labels
+                self.date = email_date
+                self.efrom = email_from
+                self.eto = email_to
+                self.subject = email_subject
+                self.text = email_text
+
+            def read_email_payload(self):
+                email_payload = self.email_data.get_payload()
+                if self.email_data.is_multipart():
+                    email_messages = list(
+                        self._get_email_messages(email_payload))
+                else:
+                    email_messages = [email_payload]
+                return [self._read_email_text(msg) for msg in email_messages]
+
+            def _get_email_messages(self, email_payload):
+                for msg in email_payload:
+                    if isinstance(msg, (list, tuple)):
+                        for submsg in self._get_email_messages(msg):
+                            yield submsg
+                    elif msg.is_multipart():
+                        for submsg in self._get_email_messages(msg.get_payload()):
+                            yield submsg
+                    else:
+                        yield msg
+
+            def _read_email_text(self, msg):
+                content_type = 'NA' if isinstance(
+                    msg, str) else msg.get_content_type()
+                encoding = 'NA' if isinstance(msg, str) else msg.get(
+                    'Content-Transfer-Encoding', 'NA')
+                if 'text/plain' in content_type and 'base64' not in encoding:
+                    msg_text = msg.get_payload()
+                elif 'text/html' in content_type and 'base64' not in encoding:
+                    msg_text = get_html_text(msg.get_payload())
+                elif content_type == 'NA':
+                    msg_text = get_html_text(msg)
+                else:
+                    msg_text = None
+                return (content_type, encoding, msg_text)
+
+        # In[5]:
+emails = []
+num_entries = len(mbox)
+for idx, email_obj in enumerate(mbox):
+    email_data = GmailMboxMessage(email_obj)
+    email_data.parse_email()
+    emails.append(email_data)
+        #     print('Parsing email {0} of {1}'.format(idx, num_entries))
+
+        # In[6]:
+
+num_entries = len(mbox2)
+for idx, email_obj in enumerate(mbox2):
+    email_data = GmailMboxMessage(email_obj)
+    email_data.parse_email()
+    emails.append(email_data)
+        #     print('Parsing email {0} of {1}'.format(idx, num_entries))
+
+        # In[7]:
+
+        # construct the dataframe
+email_df = pd.DataFrame()
+for e in emails:
+            email_df = email_df.append(
+                [{'date': e.date, 'from': e.efrom, 'to': e.eto, 'subject': e.subject, 'text': e.text}])
+
+        # In[8]:
+
+        # In[9]:
+
+        # In[10]:
+
+email_df['date_n'] = pd.to_datetime(email_df.date)
+
+        # In[11]:
+
+email_df['date_es'] = email_df['date_n'].apply(
+            lambda x: x.astimezone(timezone('US/Eastern')))
+
+        # In[ ]:
+
+        # In[ ]:
+
+        # In[12]:
+
+email_df['weekdays'] = email_df.date_es.apply(
+            lambda x: dt.strftime(x, "%A"))
+
+        # In[13]:
+
+email_df['hour'] = email_df.date_es.apply(
+            lambda x: dt.strftime(x, "%I %p")
+        )
+
+        # In[ ]:
+
+        # In[14]:
+
+day_list = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
+
+        # In[ ]:
+
+        # # Text Mining
+
+        # In[15]:
+
+
+# nltk.download('stopwords')
+
+stop = list(stopwords.words('english'))
+stop.extend(['yukun', 'yukun yang', 'yang', 'data', 'scientist'])
+
+
+def extract_text(text_list):
+
+            tags = [component[0] for component in text_list]
+
+            real_content = None
+            if 'text/html' in tags:
+                ind = [component[0]
+                       for component in text_list].index('text/html')
+                real_content = text_list[ind][-1]
+                if real_content == 'None':
+                    real_content = None
+
+            elif 'text/plain' in tags:
+                ind = [component[0]
+                       for component in text_list].index('text/plain')
+                real_content = text_list[ind][-1]
+            elif 'NA' in tags:
+                ind = [component[0] for component in text_list].index('NA')
+                real_content = text_list[ind][-1]
+
+            if (real_content is not None):
+                if len(real_content) > 10000:
+                    real_content = None
+
+            return real_content
+
+def clean_text(text):
+
+            if text is not None:
+
+                text = re.sub('=\n', '', text)
+
+                text = re.sub('\S*@\S*\s?', '',  text)
+
+                text = ' '.join(word.strip(string.punctuation)
+                                for word in text.split())
+
+                text = re.sub(
+                    r'((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*', '', text, flags=re.MULTILINE)
+
+            #     text=re.sub(r'\..*\..* ?', '', text, flags=re.MULTILINE)
+
+                text = re.sub(r"\d+", "", text)
+
+                text = re.sub(r"={1}.{2}", "", text)
+
+                text = text.replace('size', '').replace(
+                    'text size', '').replace('adjust', '').replace('td', '')
+
+                return text
+            else:
+                return None
+
+
+# In[16]:
+
+email_df['extracted'] = email_df.text.apply(extract_text)
+email_df['cleaned'] = email_df.extracted.apply(clean_text)
+
+import gensim
+import spacy
+
+def sent_to_words(sentences):
+            for sentence in sentences:
+                yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
+
+def remove_stopwords(texts):
+
+            new_docs = []
+            for doc in texts:
+                new_docs.append([word for word in doc if word not in stop])
+            return new_docs
+
+def make_bigrams(texts):
+            return [bigram_mod[doc] for doc in texts]
+
+def make_trigrams(texts):
+            return [trigram_mod[bigram_mod[doc]] for doc in texts]
+
+def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+            """https://spacy.io/api/annotation"""
+            texts_out = []
+            for sent in texts:
+                doc = nlp(" ".join(sent))
+                texts_out.append(
+                    [token.lemma_ for token in doc if token.pos_ in allowed_postags])
+            return texts_out
+
+data = email_df[email_df.cleaned.notna()].cleaned.values.tolist()
+
+        # In[27]:
+
+data_words = list(sent_to_words(data))
+
+        # In[28]:
+
+# higher threshold fewer phrases.
+bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100)
+trigram = gensim.models.Phrases(bigram[data_words], threshold=100)
+
+bigram_mod = gensim.models.phrases.Phraser(bigram)
+trigram_mod = gensim.models.phrases.Phraser(trigram)
+
+        # In[29]:
+
+        # Remove Stop Words
+data_words_nostops = remove_stopwords(data_words)
+
+        # Form Bigrams
+data_words_bigrams = make_bigrams(data_words_nostops)
+
+        # In[30]:
+
+try:
+            nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+except:
+            import en_core_web_sm
+            nlp = en_core_web_sm.load()
+
+        # Do lemmatization keeping only noun, adj, vb, adv
+data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=[
+                                        'NOUN', 'ADJ', 'VERB', 'ADV'])
+
+        # print(data_lemmatized[:1])
+
+        # In[31]:
+
+import gensim
+import gensim.corpora as corpora
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
+        # Create Dictionary
+id2word = corpora.Dictionary(data_lemmatized)
+
+        # Create Corpus
+texts = data_lemmatized
+
+        # Term Document Frequency
+corpus = [id2word.doc2bow(text) for text in texts]
+
+def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=3):
+            """
+            Compute c_v coherence for various number of topics
+
+            Parameters:
+            ----------
+            dictionary : Gensim dictionary
+            corpus : Gensim corpus
+            texts : List of input texts
+            limit : Max num of topics
+
+            Returns:
+            -------
+            model_list : List of LDA topic models
+            coherence_values : Coherence values corresponding to the LDA model with respective number of topics
+            """
+            coherence_values = []
+            model_list = []
+            for num_topics in range(start, limit, step):
+                model = gensim.models.ldamodel.LdaModel(
+                    corpus=corpus, num_topics=num_topics, id2word=id2word, random_state=2020)
+                model_list.append(model)
+                coherencemodel = CoherenceModel(
+                    model=model, texts=texts, dictionary=dictionary, coherence='c_v')
+                coherence_values.append(coherencemodel.get_coherence())
+
+            return model_list, coherence_values
+
+
+# In[77]:
+model_list, coherence_values = compute_coherence_values(
+            dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=2, limit=40, step=2)
+
+        # In[78]:
+
+x = range(2, 40, 2)
+
+        # In[79]:
+
+choose_k = pd.DataFrame(
+            {'# of Topics': x, 'coherence': coherence_values})
+
+def format_topics_sentences(ldamodel=None, corpus=corpus, texts=data):
+            # Init output
+            sent_topics_df = pd.DataFrame()
+
+            # Get main topic in each document
+            for i, row_list in enumerate(ldamodel[corpus]):
+                row = row_list[0] if ldamodel.per_word_topics else row_list
+                # print(row)
+                row = sorted(row, key=lambda x: (x[1]), reverse=True)
+                # Get the Dominant topic, Perc Contribution and Keywords for each document
+                for j, (topic_num, prop_topic) in enumerate(row):
+                    if j == 0:  # => dominant topic
+                        wp = ldamodel.show_topic(topic_num)
+                        topic_keywords = ", ".join([word for word, prop in wp])
+                        sent_topics_df = sent_topics_df.append(pd.Series(
+                            [int(topic_num), round(prop_topic, 4), topic_keywords]), ignore_index=True)
+                    else:
+                        break
+            sent_topics_df.columns = ['Dominant_Topic',
+                                      'Perc_Contribution', 'Topic_Keywords']
+
+            # Add original text to the end of the output
+            contents = pd.Series(texts)
+            sent_topics_df = pd.concat([sent_topics_df, contents], axis=1)
+            return(sent_topics_df)
+
+
 def important_words(metric, ranks):
-#     stop = list(stopwords.words('english'))
-#     stop.extend(['yukun','yukun yang','yang','data','scientist'])
-  
-  if metric=='tf':
-      vectorizer= CountVectorizer(ngram_range=(1,3),stop_words=stop)
-      vectors = vectorizer.fit_transform(email_df.dropna().cleaned.to_list())
-  elif metric=='tfidf':
-      vectorizer = TfidfVectorizer(ngram_range=(1,3),stop_words=stop)
+    #     stop = list(stopwords.words('english'))
+    #     stop.extend(['yukun','yukun yang','yang','data','scientist'])
+
+    if metric == 'tf':
+        vectorizer = CountVectorizer(ngram_range=(1, 3), stop_words=stop)
+        vectors = vectorizer.fit_transform(email_df.dropna().cleaned.to_list())
+    elif metric == 'tfidf':
+        vectorizer = TfidfVectorizer(ngram_range=(1, 3), stop_words=stop)
 #         tf_vectorizer= CountVectorizer(ngram_range=(1,3),stop_words=stop)
-      vectors = vectorizer.fit_transform(email_df.dropna().cleaned.to_list())
-  
-  
-  #making df
-  rankings=pd.DataFrame(vectors.todense().tolist(), columns=vectorizer.get_feature_names()).sum().reset_index().rename(columns={'index':'word',0:'value'})
-  
+        vectors = vectorizer.fit_transform(email_df.dropna().cleaned.to_list())
+
+    # making df
+    rankings = pd.DataFrame(vectors.todense().tolist(), columns=vectorizer.get_feature_names(
+    )).sum().reset_index().rename(columns={'index': 'word', 0: 'value'})
+
 #     if rankings.value.dtype !='int':
-  rankings['value']=rankings['value'].round(2)
-  #making distinguish
-  rankings['type']=None
-  for ind, row in rankings.iterrows():
-          num=len(row['word'].split())
-          if num==1:
-              rankings.loc[ind,'type']='unigram'
-          elif num==2:
-              rankings.loc[ind,'type']='bigram'
-          elif num==3:
-              rankings.loc[ind,'type']='trigram'
-  
-  return rankings.sort_values('value', ascending=False).head(ranks)
+    rankings['value'] = rankings['value'].round(2)
+    # making distinguish
+    rankings['type'] = None
+    for ind, row in rankings.iterrows():
+        num = len(row['word'].split())
+        if num == 1:
+            rankings.loc[ind, 'type'] = 'unigram'
+        elif num == 2:
+            rankings.loc[ind, 'type'] = 'bigram'
+        elif num == 3:
+            rankings.loc[ind, 'type'] = 'trigram'
+
+    return rankings.sort_values('value', ascending=False).head(ranks)
+
 
 def make_important_graphs(df):
-  
-  
-  bar=px.bar(df, y='value', x='word', text='value', color='type', template='seaborn', title='Important Terms Bar Chart')
-  bar.update_layout(xaxis_categoryorder = 'total descending')
-  
-  tree=px.treemap(df,path=['type','word'],values='value', template='seaborn', title='Important Terms Tree Map')
-  return bar,tree
+
+    bar = px.bar(df, y='value', x='word', text='value', color='type',
+                 template='seaborn', title='Important Terms Bar Chart')
+    bar.update_layout(xaxis_categoryorder='total descending')
+
+    tree = px.treemap(df, path=['type', 'word'], values='value',
+                      template='seaborn', title='Important Terms Tree Map')
+    return bar, tree
 
 
 # In[53]:
 
 
-import nltk
-from nltk.collocations import *
-from collections import Counter
-
 def collo(metric):
-    
 
     bigram_measures = nltk.collocations.BigramAssocMeasures()
     # trigram_measures = nltk.collocations.TrigramAssocMeasures()
 
-    text=' '.join(i for i in email_df.dropna().cleaned.to_list())
-    words=[word for word in text.lower().split() if word not in stop]
+    text = ' '.join(i for i in email_df.dropna().cleaned.to_list())
+    words = [word for word in text.lower().split() if word not in stop]
 
     # change this to read in your data
     finder = BigramCollocationFinder.from_words(words)
@@ -69,65 +466,63 @@ def collo(metric):
     # return the 10 n-grams with the highest PMI
     # finder.nbest(bigram_measures.pmi, 15)
 #     finder.nbest(bigram_measures.likelihood_ratio, 15)
-    if metric=='pmi':
-        coli=finder.score_ngrams(bigram_measures.pmi)
-    elif metric=='chisquare':
-        coli=finder.score_ngrams(bigram_measures.chi_sq)
-    elif metric=='likelihood_ratio':
-        coli=finder.score_ngrams(bigram_measures.likelihood_ratio)
-    
+    if metric == 'pmi':
+        coli = finder.score_ngrams(bigram_measures.pmi)
+    elif metric == 'chisquare':
+        coli = finder.score_ngrams(bigram_measures.chi_sq)
+    elif metric == 'likelihood_ratio':
+        coli = finder.score_ngrams(bigram_measures.likelihood_ratio)
+
     return coli
 
+
 def make_circos(test_co):
-    
-    colors=['#fff1d6','#c9a03d','#02b1a0','#848484','#cfcfcf','#a2e8eb','#ecd1fc',"#f0b3c5","#c4e5d6","#d7f2fd",'#feb408',
-            '#f09654','#ee6f37','#6da393','#007890','#e8c8ee','#ffa3a3','#f6e777']
-    
+
+    colors = ['#fff1d6', '#c9a03d', '#02b1a0', '#848484', '#cfcfcf', '#a2e8eb', '#ecd1fc', "#f0b3c5", "#c4e5d6", "#d7f2fd", '#feb408',
+              '#f09654', '#ee6f37', '#6da393', '#007890', '#e8c8ee', '#ffa3a3', '#f6e777']
 
     colors.extend(colors)
-    
-    top20=test_co[:10]
-    workcounter=Counter()
+
+    top20 = test_co[:10]
+    workcounter = Counter()
     for i in top20:
         workcounter.update(i[0])
-
-
-    ideogram=[]
+    ideogram = []
     for tu in workcounter.most_common():
-        ideogram.append({'id':tu[0], 'label':tu[0], 'color':colors.pop(), 'len':tu[-1]})
+        ideogram.append({'id': tu[0], 'label': tu[0],
+                         'color': colors.pop(), 'len': tu[-1]})
 
-    ribbons=[]
+    ribbons = []
     for co in top20:
-        ribbons.append({'color':'#9ecaf6', 
-                        'source':{'id':co[0][0],'start':0,'end':1},
-                       'target':{'id':co[0][-1],'start':0,'end':1}})
-        
-    return  dashbio.Circos(
-                id='circos',
-                layout=ideogram,
+        ribbons.append({'color': '#9ecaf6',
+                        'source': {'id': co[0][0], 'start': 0, 'end': 1},
+                        'target': {'id': co[0][-1], 'start': 0, 'end': 1}})
+
+    return dashbio.Circos(
+        id='circos',
+        layout=ideogram,
         size=600,
-                selectEvent={'hover': "hover", 'click': "click", 2: "both"},
-#                 eventDatum={"0": "hover", "1": "click", "2": "both"},
-                config= {'ticks': {'display': False},'labels':{'size': 10,'position': 'center'}},
-                tracks=[{
-                    'type': 'CHORDS',
+        selectEvent={'hover': "hover", 'click': "click", 2: "both"},
+        #                 eventDatum={"0": "hover", "1": "click", "2": "both"},
+        config={'ticks': {'display': False}, 'labels': {
+           'size': 10, 'position': 'center'}},
+        tracks=[{
+            'type': 'CHORDS',
                     'data': ribbons,
-                     'selectEvent':{"0": "hover", "1": "click", "2": "both"},
-                     'tooltipContent': {
-                                        'source': 'source',
-                                        'sourceID': 'id',
-                                        'target': 'target',
-                                        'targetID': 'id',
-                                        'targetEnd': 'end'
-                                    }
-                                }
-                ]
-            )
-    
+            'selectEvent': {"0": "hover", "1": "click", "2": "both"},
+            'tooltipContent': {
+                'source': 'source',
+                'sourceID': 'id',
+                'target': 'target',
+                'targetID': 'id',
+                'targetEnd': 'end'
+            }
+        }
+        ]
+    )
 
 
 # In[25]:
-
 
 
 # View
@@ -137,17 +532,10 @@ def make_circos(test_co):
 # In[32]:
 
 
-
-
-
 # In[ ]:
 
 
-
-
-
 # In[40]:
-
 
 
 
@@ -162,14 +550,9 @@ def make_circos(test_co):
 # In[ ]:
 
 
-
-
-
 # # Define all functions for the app
 
 # In[ ]:
-
-
 
 
 
@@ -189,7 +572,7 @@ def intro():
                 id="intro",
                 children=["Rejection hurts. Yes but yet, I've met nobody who has not been rejected.\
                 It is a part of life and instead of drowning in the sorrow and somberness of being rejected, we can make it fun and try to try to analyze it.",
-                         ]
+                          ]
             ),
             html.Div(children=['👋 My name is ',
                                html.A("Yukun", href='#contact_info'),
@@ -203,9 +586,9 @@ def intro():
                     'Subsetting the dataset by selecting the time range, the weekdays, and the hours.'),
                 html.Li('Showing specific data entries by clicking on the Heatmap.'),
                 html.Div('Other interaction options are detailed in the corresponding part')])
-#                 html.Li(
-#                     'Change the Solver of the Temporal Process and the number of days to prdict.'),
-#                 html.Li('Change the metric to rank the important terms, and the number of topics to model.')])
+            #                 html.Li(
+            #                     'Change the Solver of the Temporal Process and the number of days to prdict.'),
+            #                 html.Li('Change the metric to rank the important terms, and the number of topics to model.')])
         ],
     )
 
@@ -234,11 +617,11 @@ def control_card():
                 options=[{'label': day, 'value': day} for day in day_list],
                 value=day_list,
                 multi=True
-#                 style=dict(
-# #                     height='100%',
-#                     display='block',
-#                     verticalAlign="middle"
-#                 )
+                #                 style=dict(
+                # #                     height='100%',
+                #                     display='block',
+                #                     verticalAlign="middle"
+                #                 )
             ),
             html.Br(),
             html.Br(),
@@ -257,13 +640,13 @@ def control_card():
 # In[56]:
 
 
-def filter_df(start,end,weekdays,time):
+def filter_df(start, end, weekdays, time):
     filtered_df = email_df.sort_values("date_es").set_index("date_es")[
         start.astimezone(timezone('US/Eastern')):end.astimezone(timezone('US/Eastern'))
     ]
-    
-    filtered_df= filtered_df[filtered_df.weekdays.isin(weekdays)]
-    filtered_df= filtered_df[filtered_df.hour.isin(time)]
+
+    filtered_df = filtered_df[filtered_df.weekdays.isin(weekdays)]
+    filtered_df = filtered_df[filtered_df.hour.isin(time)]
     return filtered_df.reset_index()
 
 
@@ -271,30 +654,34 @@ def filter_df(start,end,weekdays,time):
 
 
 def generate_paco(filtered):
-    
-    filtered.loc[filtered.date_es.dt.weekday.isin([6,5]),'Is Weekend']=True
-    filtered['Is Weekend']=filtered['Is Weekend'].fillna(False)
-    filtered['Day Time']=((filtered.date_es.dt.hour % 24 + 4) // 4).map({1: 'Late Night',
-                      2: 'Early Morning',
-                      3: 'Morning',
-                      4: 'Noon',
-                      5: 'Evening',
-                      6: 'Night'})
-    
-    groupedby=filtered.groupby(['Is Weekend','weekdays','Day Time','hour'])['from'].count().reset_index()
-    
-    new_df=pd.merge(left=filtered,right=groupedby, left_on=['Is Weekend','weekdays','Day Time','hour'],right_on=['Is Weekend','weekdays','Day Time','hour'])
 
-    fig=px.parallel_categories(data_frame=new_df, 
-                               dimensions=['Is Weekend','weekdays','Day Time','hour'],
-                               color='from_y',
-                               labels={'weekdays':'Day in the Week','hour':'Hour in the Day'},
-                              color_continuous_scale=px.colors.sequential.dense)
-    
-    fig.layout['coloraxis']['colorbar']['title']['text']='Count'
-    fig.update_layout({'height':600})
-    
-    fig.layout.margin={'t':30, 'l':10, 'r':10,'b':20}
+    filtered.loc[filtered.date_es.dt.weekday.isin([6, 5]), 'Is Weekend'] = True
+    filtered['Is Weekend'] = filtered['Is Weekend'].fillna(False)
+    filtered['Day Time'] = ((filtered.date_es.dt.hour % 24 + 4) // 4).map({1: 'Late Night',
+                                                                           2: 'Early Morning',
+                                                                           3: 'Morning',
+                                                                           4: 'Noon',
+                                                                           5: 'Evening',
+                                                                           6: 'Night'})
+
+    groupedby = filtered.groupby(['Is Weekend', 'weekdays', 'Day Time', 'hour'])[
+        'from'].count().reset_index()
+
+    new_df = pd.merge(left=filtered, right=groupedby, left_on=[
+                      'Is Weekend', 'weekdays', 'Day Time', 'hour'], right_on=['Is Weekend', 'weekdays', 'Day Time', 'hour'])
+
+    fig = px.parallel_categories(data_frame=new_df,
+                                 dimensions=['Is Weekend',
+                                             'weekdays', 'Day Time', 'hour'],
+                                 color='from_y',
+                                 labels={'weekdays': 'Day in the Week',
+                                         'hour': 'Hour in the Day'},
+                                 color_continuous_scale=px.colors.sequential.dense)
+
+    fig.layout['coloraxis']['colorbar']['title']['text'] = 'Count'
+    fig.update_layout({'height': 600})
+
+    fig.layout.margin = {'t': 30, 'l': 10, 'r': 10, 'b': 20}
     return fig
 
 
@@ -336,7 +723,6 @@ def generate_patient_volume_heatmap(start, end, hm_click, reset, weekdays, time)
     hour_of_day = ""
     weekday = ""
     shapes = []
-
 
     if hm_click is not None:
         hour_of_day = hm_click["points"][0]["x"]
@@ -425,36 +811,37 @@ def generate_patient_volume_heatmap(start, end, hm_click, reset, weekdays, time)
 # In[60]:
 
 
-def generate_hist(start,end, weekdays,time):
-    
-    df=email_df.copy()
-    df['date_pure']=df.date_es.dt.date
-    df=df.sort_values("date_pure").set_index("date_pure")
-    
-    df['selected']=False
-    
-    
+def generate_hist(start, end, weekdays, time):
+
+    df = email_df.copy()
+    df['date_pure'] = df.date_es.dt.date
+    df = df.sort_values("date_pure").set_index("date_pure")
+
+    df['selected'] = False
+
+
 #     print(df)
 #     df.loc[~df.weekdays.isin(weekdays),'selected']=False
 #     df.loc[~df.hour.isin(time),'selected']=False
 
-    df.loc[pd.to_datetime(start).date():pd.to_datetime(end).date(),'selected']=True
-    
-    df.loc[~df.weekdays.isin(weekdays),'selected']=False
-    df.loc[~df.hour.isin(time),'selected']=False
-    df=df.reset_index()
-    fig=px.histogram(df, "date_es", color='selected', marginal="rug", nbins=12,
-                         height=400,
-                   color_discrete_map={
-                True: "rgb(166,206,227)", False: "rgb(31,120,180)"
-            },
-                  )
+    df.loc[pd.to_datetime(start).date():pd.to_datetime(
+        end).date(), 'selected'] = True
+
+    df.loc[~df.weekdays.isin(weekdays), 'selected'] = False
+    df.loc[~df.hour.isin(time), 'selected'] = False
+    df = df.reset_index()
+    fig = px.histogram(df, "date_es", color='selected', marginal="rug", nbins=12,
+                       height=400,
+                       color_discrete_map={
+                           True: "rgb(166,206,227)", False: "rgb(31,120,180)"
+                       },
+                       )
     fig.update_layout(margin=dict(l=2, r=2, t=2, b=2), height=200)
-    fig.layout.xaxis.title.text=None
-    fig.layout.yaxis.title.text='Count'
+    fig.layout.xaxis.title.text = None
+    fig.layout.yaxis.title.text = 'Count'
 #     fig.layout.legend['orientation']='h'
 #     fig.update_layout(legend=dict(x=0.25, y=-0.25))
-    fig.data[0]['nbinsx']=20
+    fig.data[0]['nbinsx'] = 20
     return fig
 
 
@@ -468,13 +855,6 @@ def generate_hist(start,end, weekdays,time):
 
 
 # In[66]:
-
-
-from tick.hawkes import (SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp,
-                         HawkesEM, SimuHawkesSumExpKernels, HawkesSumExpKern,HawkesExpKern)
-from tick.plot import plot_point_process
-import itertools
-import plotly.tools as tls
 
 
 def haweks(learner, pre_days):
@@ -516,9 +896,8 @@ def haweks(learner, pre_days):
                 best_hawkes = hawkes_learner
                 best_score = hawkes_score
 
-
     simu = best_hawkes._corresponding_simu()
-    simu.seed=2020
+    simu.seed = 2020
     simu.track_intensity(0.01)
     simu.set_timestamps([test_time.to_numpy(dtype='double')])
     simu.end_time = 100+pre_days
@@ -527,7 +906,8 @@ def haweks(learner, pre_days):
 
 # process = plot_point_process(simu, plot_intensity=True)
 
-    plotly_fig = tls.mpl_to_plotly(plot_point_process(simu, plot_intensity=True))
+    plotly_fig = tls.mpl_to_plotly(
+        plot_point_process(simu, plot_intensity=True))
 
     return seperate(plotly_fig)
 
@@ -535,49 +915,47 @@ def haweks(learner, pre_days):
 # In[63]:
 
 
-import plotly.graph_objects as go
 def seperate(f):
-    original_f= go.Figure(f)
-    cop_f= go.Figure(f)
-    
-    new_color='rgba(63, 191, 63, 0.4)'
-    
-    cop_f.data[0]['x']=tuple(filter(lambda x: x > 100, cop_f.data[0]['x']))
-    cop_f.data[0]['y']=cop_f.data[0]['y'][len(cop_f.data[0]['y'])-len(cop_f.data[0]['x']):]
-    
-        
-    cop_f.data[1]['x']=tuple(filter(lambda x: x > 100, cop_f.data[1]['x']))
-    cop_f.data[1]['y']=cop_f.data[1]['y'][len(cop_f.data[1]['y'])-len(cop_f.data[1]['x']):]
-    
-    
-    cop_f.data[1]['marker']['color']=new_color
-    cop_f.data[1]['marker']['line']['color']=new_color
-    
-    cop_f.data[0]['line']['color']=new_color
-    
-    
-    original_f.data[0]['x']=tuple(filter(lambda x: x <= 100, original_f.data[0]['x']))
-    
-    original_f.data[0]['y']=original_f.data[0]['y'][:len(original_f.data[0]['x'])]
-    
-        
-    original_f.data[1]['x']=tuple(filter(lambda x: x <= 100, original_f.data[1]['x']))
-    original_f.data[1]['y']=original_f.data[1]['y'][:len(original_f.data[1]['x'])]
-    
-    
-    
+    original_f = go.Figure(f)
+    cop_f = go.Figure(f)
+
+    new_color = 'rgba(63, 191, 63, 0.4)'
+
+    cop_f.data[0]['x'] = tuple(filter(lambda x: x > 100, cop_f.data[0]['x']))
+    cop_f.data[0]['y'] = cop_f.data[0]['y'][len(
+        cop_f.data[0]['y'])-len(cop_f.data[0]['x']):]
+
+    cop_f.data[1]['x'] = tuple(filter(lambda x: x > 100, cop_f.data[1]['x']))
+    cop_f.data[1]['y'] = cop_f.data[1]['y'][len(
+        cop_f.data[1]['y'])-len(cop_f.data[1]['x']):]
+
+    cop_f.data[1]['marker']['color'] = new_color
+    cop_f.data[1]['marker']['line']['color'] = new_color
+
+    cop_f.data[0]['line']['color'] = new_color
+
+    original_f.data[0]['x'] = tuple(
+        filter(lambda x: x <= 100, original_f.data[0]['x']))
+
+    original_f.data[0]['y'] = original_f.data[0]['y'][:len(
+        original_f.data[0]['x'])]
+
+    original_f.data[1]['x'] = tuple(
+        filter(lambda x: x <= 100, original_f.data[1]['x']))
+    original_f.data[1]['y'] = original_f.data[1]['y'][:len(
+        original_f.data[1]['x'])]
+
     original_f.add_traces([i for i in cop_f['data']])
-    
-    original_f.update_layout({'height':400})
+
+    original_f.update_layout({'height': 400})
 #     original_f.layout.margin['l']=25
-    original_f.layout.margin={
-    'b': 50, 'l': 25, 'r': 30, 't': 50
-}
-    
-    
-    original_f.layout['xaxis']['title']={'font': {'color': '#000000', 'size': 13.0}, 'text': 'No. of Days since the 1st Rej Letter'}
-    
-    
+    original_f.layout.margin = {
+        'b': 50, 'l': 25, 'r': 30, 't': 50
+    }
+
+    original_f.layout['xaxis']['title'] = {'font': {
+        'color': '#000000', 'size': 13.0}, 'text': 'No. of Days since the 1st Rej Letter'}
+
     original_f.update_layout(showlegend=True)
     original_f.update_layout(legend_orientation="h")
     original_f.update_layout(legend=dict(x=0.25, y=-0.25))
@@ -595,61 +973,46 @@ def seperate(f):
                 width=2,
                  dash="dashdot"
             )
-))
-    
-    
-    original_f['data'][0]['name']='Estimated Intensity of Original Events'
-    original_f['data'][1]['name']='Original Events'
+        ))
 
-    original_f['data'][2]['name']='Estimated Intensity of Predicted Events'
-    original_f['data'][3]['name']='Predicted Events'
+    original_f['data'][0]['name'] = 'Estimated Intensity of Original Events'
+    original_f['data'][1]['name'] = 'Original Events'
 
-    
-    original_f.layout['title']={'font': {'color': 'rgb(87, 145, 203)', 'size': 17}, 
-                                'text': 'Hawekes Modelling Results','xanchor': 'center',
-        'yanchor': 'top','x':0.5}
-    original_f.layout.margin.l=30
+    original_f['data'][2]['name'] = 'Estimated Intensity of Predicted Events'
+    original_f['data'][3]['name'] = 'Predicted Events'
+
+    original_f.layout['title'] = {'font': {'color': 'rgb(87, 145, 203)', 'size': 17},
+                                  'text': 'Hawekes Modelling Results', 'xanchor': 'center',
+                                  'yanchor': 'top', 'x': 0.5}
+    original_f.layout.margin.l = 30
 #     original_f.layout.width=1000
-    original_f.layout.autosize=True
-    
-    
+    original_f.layout.autosize = True
+
     return original_f
 
 
 # In[82]:
 
 
-import dash
-import plotly.express as px
-from jupyter_dash import JupyterDash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output
-from dash import no_update
-import dash_table
-import dash_bio as dashbio
-import textstat
-import lexicalrichness
-import textblob
-
-
 def cal_slider(start_date, end_date):
     start_value = (dt.strptime(start_date, "%Y-%m-%d") -
                    (email_df['date_es'].min().tz_convert(None))).days+1
-    time_delta = (dt.strptime(end_date, "%Y-%m-%d")) -         (dt.strptime(start_date, "%Y-%m-%d"))
+    time_delta = (dt.strptime(end_date, "%Y-%m-%d")) - \
+        (dt.strptime(start_date, "%Y-%m-%d"))
     end_value = time_delta.days
     return [start_value, start_value+end_value]
 
 
 def cal_range(value):
     start_value, end_value = value
-    start_date = email_df['date_es'].min().date() +         datetime.timedelta(start_value)
+    start_date = email_df['date_es'].min().date() + \
+        datetime.timedelta(start_value)
     end_date = start_date+datetime.timedelta(end_value)
     return start_date, end_date
 
 
 app = dash.Dash(__name__, external_stylesheets=["https://codepen.io/chriddyp/pen/bWLwgP.css",
-                                                  "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
+                                                "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
 # app = JupyterDash(__name__,external_stylesheets=["https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
 
 
@@ -741,11 +1104,11 @@ app.layout = html.Div(
                                      {'name': i, 'id': i, 'deletable': True} for i in ['date_es', 'subject']
                                  ],
                                  page_current=0,
-#                                  page_size=1,
-#                                  page_action='custom',
+                                 #                                  page_size=1,
+                                 #                                  page_action='custom',
 
-#                                  sort_action='custom',
-#                                  sort_mode='single',
+                                 #                                  sort_action='custom',
+                                 #                                  sort_mode='single',
                                  sort_by=[])],
 
                              )
@@ -756,12 +1119,13 @@ app.layout = html.Div(
             html.Div("Let's highlight the most prominent streamline of the email flow. \
                      It could come in handy when we observed some trends in the data. \
             This plot will update automatically with the Date/Day/Hour you selected in the Control widgets.",
-                    style={'margin':"10px"}),
+                     style={'margin': "10px"}),
             dcc.Graph(id='paco')]
         ),
         html.Div(id='temperal pro', className='columns pretty_container', children=[
 
-            html.H5("Temporal Process Analytics", style={'margin-left':'10px'}),
+            html.H5("Temporal Process Analytics",
+                    style={'margin-left': '10px'}),
             html.P(
                 children="A Temporal Process is a kind of random process whose realization consists of discrete events \
                 localized in time. Compared with \
@@ -769,8 +1133,8 @@ app.layout = html.Div(
                 an email fits better with a Temporal Process Analysis. \n \
                 A very popular kind of termporal process is the Haweks process, which could be consider\
                 as an 'auto-regression' type of process. Here I used the Haweks Process to simulate the events.\
-                You can select the Kernal and the days to forecast below.", 
-                style={'margin':'10px'}
+                You can select the Kernal and the days to forecast below.",
+                style={'margin': '10px'}
             ),
             html.Div(
                 id="select model",
@@ -837,12 +1201,13 @@ app.layout = html.Div(
         ]),
 
         html.Div(className='columns mini_container', children=[
-            html.H5("Email Content Analysis",style={'margin':'10px'}),
+            html.H5("Email Content Analysis", style={'margin': '10px'}),
             html.Div("After cleaning the text of the emails, we can find out what words or phrases are the important or interesting .\
             I provided two commonly used metrics for you to rank the words/phrases. On the right panel, I have tried to present you with\
             the interesting bigrams, a.k.a. word collocations. Feel free to change the metric to see \
-            which words are connected.",style={'margin':'10px'}),
-            html.P('P.S. It might take a long time for the left graph to show up.',style={'margin':'10px'}),
+            which words are connected.", style={'margin': '10px'}),
+            html.P('P.S. It might take a long time for the left graph to show up.', style={
+                   'margin': '10px'}),
             html.Div(id='phrase', className='six columns',
                      style={'text-align': 'center'},
                      children=[
@@ -920,8 +1285,8 @@ app.layout = html.Div(
                          children=[html.Div(className='six columns container',
                                             style={
                                                 'width': "70%",
-                                            'margin':"30px"},
-                                            children=[html.H5('Topic Modelling'),html.Br(), html.Blockquote('We can further \
+                                                'margin': "30px"},
+                                            children=[html.H5('Topic Modelling'), html.Br(), html.Blockquote('We can further \
                                             explore what these emails are mainly talking about by applying topic modeling techniques to \
             the texts. To achieve the best results, the texts were cleaned by removing extra elements(like HTML tags), punctuations, and numbers.\
             The stopwords are removed as well. I used the NLTK stopword collection and extended it with other self-defined words, like my name😂. \
@@ -930,10 +1295,10 @@ app.layout = html.Div(
             you can change the number of topics by clicking the dots in the line chart.')])]),
 
                 html.Div(className='six columns',
-                         style={'text-align':'center'},
+                         style={'text-align': 'center'},
                          children=[
-                             html.Div(style={'display': 'inline-flex'}, children=[html.Div('Number of Topics Selected', style={'margin-right': '20px'})
-                                                                                  , dcc.Input(id="current_k", value=4, disabled=True)]),
+                             html.Div(style={'display': 'inline-flex'}, children=[html.Div('Number of Topics Selected', style={
+                                      'margin-right': '20px'}), dcc.Input(id="current_k", value=4, disabled=True)]),
                              #                              style={'display':'inline-flex'},
                              dcc.Graph(id='coherence',
                                        figure=px.line(choose_k, x='# of Topics', y='coherence').update_traces(
@@ -943,22 +1308,22 @@ app.layout = html.Div(
                 #                 html.Hr(),
                 html.Br(),
                  html.H6("Let's see the temporal distribution and the linguistic features of these topics.",
-                        style={'text-align': 'center', 'width': "100%",'margin-top':'20px'}, className='columns'),
-                html.Div(className='six columns', children=[
+                         style={'text-align': 'center', 'width': "100%", 'margin-top': '20px'}, className='columns'),
+                 html.Div(className='six columns', children=[
                      dcc.Loading(dcc.Graph(id='sunburst'))]),
-                #                 html.Div(style={"border-left":"1px solid #000","height":"500px"}),
-                html.Div(className='six columns', children=[
-                    dcc.Loading(dcc.Graph(id='polar'))]),
-                #                 html.Hr(),
-                html.Br(),
-                html.Br(),
-                html.H6('Visualizing the Topic Modeling Results with t-SNE',
-                        style={'text-align': 'center', 'width': "100%",'margin-top':'20px'}, className='columns'),
-                html.Hr(),
-                html.Div(className='columns',
-                         children=[dcc.Loading(dcc.Graph(id='tsne'))])
-            ])]),
-        html.Div(id='contact_info',style={'text-align': 'center'}, className='pretty_container twelve columns', children=[
+                 #                 html.Div(style={"border-left":"1px solid #000","height":"500px"}),
+                 html.Div(className='six columns', children=[
+                     dcc.Loading(dcc.Graph(id='polar'))]),
+                 #                 html.Hr(),
+                 html.Br(),
+                 html.Br(),
+                 html.H6('Visualizing the Topic Modeling Results with t-SNE',
+                         style={'text-align': 'center', 'width': "100%", 'margin-top': '20px'}, className='columns'),
+                 html.Hr(),
+                 html.Div(className='columns',
+                          children=[dcc.Loading(dcc.Graph(id='tsne'))])
+                 ])]),
+        html.Div(id='contact_info', style={'text-align': 'center'}, className='pretty_container twelve columns', children=[
             'Thanks for playing with it! You can contact me via my ',
             html.A(
                 'LinkedIn', href='https://www.linkedin.com/in/yukun-yang-1044ab157/', target="_blank"),
@@ -1207,442 +1572,6 @@ def update_output_from_picker(start_date, end_date, weekdays, time, click):
 
 
 if __name__ == '__main__':
-    
-    import mailbox
-    import email.utils
-
-    import nltk
-    from nltk.corpus import stopwords
-    nltk.download('stopwords')
-    # In[2]:
-
-
-    import pandas as pd
-    import numpy as np
-    import datetime
-    import plotly.express as px
-
-
-    # In[3]:
-
-
-    mbox = mailbox.mbox('Rej.mbox')
-    mbox2 = mailbox.mbox('rej2.mbox')
-
-
-    # # Email Processing
-
-    # In[4]:
-
-
-    import mailbox
-    import bs4
-
-    def get_html_text(html):
-        try:
-            return bs4.BeautifulSoup(html, "html5lib").body.get_text(' ', strip=True)
-        except AttributeError: # message contents empty
-            return None
-
-    class GmailMboxMessage():
-        def __init__(self, email_data):
-            if not isinstance(email_data, mailbox.mboxMessage):
-                raise TypeError('Variable must be type mailbox.mboxMessage')
-            self.email_data = email_data
-            self.labels= self.date= self.efrom= self.eto= self.subject= self.text=None
-            
-
-        def parse_email(self):
-            email_labels = self.email_data['X-Gmail-Labels']
-            email_date = self.email_data['Date']
-            email_from = self.email_data['From']
-            email_to = self.email_data['To']
-            email_subject = self.email_data['Subject']
-            email_text = self.read_email_payload() 
-            
-            self.labels=email_labels
-            self.date=email_date
-            self.efrom=email_from
-            self.eto=email_to
-            self.subject=email_subject
-            self.text=email_text
-            
-
-        def read_email_payload(self):
-            email_payload = self.email_data.get_payload()
-            if self.email_data.is_multipart():
-                email_messages = list(self._get_email_messages(email_payload))
-            else:
-                email_messages = [email_payload]
-            return [self._read_email_text(msg) for msg in email_messages]
-
-        def _get_email_messages(self, email_payload):
-            for msg in email_payload:
-                if isinstance(msg, (list,tuple)):
-                    for submsg in self._get_email_messages(msg):
-                        yield submsg
-                elif msg.is_multipart():
-                    for submsg in self._get_email_messages(msg.get_payload()):
-                        yield submsg
-                else:
-                    yield msg
-
-        def _read_email_text(self, msg):
-            content_type = 'NA' if isinstance(msg, str) else msg.get_content_type()
-            encoding = 'NA' if isinstance(msg, str) else msg.get('Content-Transfer-Encoding', 'NA')
-            if 'text/plain' in content_type and 'base64' not in encoding:
-                msg_text = msg.get_payload()
-            elif 'text/html' in content_type and 'base64' not in encoding:
-                msg_text = get_html_text(msg.get_payload())
-            elif content_type == 'NA':
-                msg_text = get_html_text(msg)
-            else:
-                msg_text = None
-            return (content_type, encoding, msg_text)
-
-
-    # In[5]:
-
-
-    emails=[]
-    num_entries = len(mbox)
-    for idx, email_obj in enumerate(mbox):
-        email_data = GmailMboxMessage(email_obj)
-        email_data.parse_email()
-        emails.append(email_data)
-    #     print('Parsing email {0} of {1}'.format(idx, num_entries))
-
-
-    # In[6]:
-
-
-    num_entries = len(mbox2)
-    for idx, email_obj in enumerate(mbox2):
-        email_data = GmailMboxMessage(email_obj)
-        email_data.parse_email()
-        emails.append(email_data)
-    #     print('Parsing email {0} of {1}'.format(idx, num_entries))
-
-
-    # In[7]:
-
-
-    # construct the dataframe
-    email_df= pd.DataFrame()
-    for e in emails:
-        email_df=email_df.append([{'date':e.date,'from':e.efrom,'to':e.eto,'subject':e.subject,'text':e.text}])
-
-
-    # In[8]:
-
-
-    from pytz import timezone
-
-
-    # In[9]:
-
-
-    from dateutil.parser import parse
-    from datetime import datetime as dt
-
-
-    # In[10]:
-
-
-    email_df['date_n']=pd.to_datetime(email_df.date)
-
-
-    # In[11]:
-
-
-    email_df['date_es']=email_df['date_n'].apply(lambda x: x.astimezone(timezone('US/Eastern')))
-
-
-    # In[ ]:
-
-
-
-
-
-    # In[ ]:
-
-
-
-
-
-    # In[12]:
-
-
-    email_df['weekdays']=email_df.date_es.apply(lambda x: dt.strftime(x, "%A"))
-
-
-    # In[13]:
-
-
-    email_df['hour']=email_df.date_es.apply(
-        lambda x: dt.strftime(x, "%I %p")
-    ) 
-
-
-    # In[ ]:
-
-
-
-
-
-    # In[14]:
-
-
-    day_list = [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-    ]
-
-
-    # In[ ]:
-
-
-
-
-
-    # # Text Mining
-
-    # In[15]:
-
-
-    import re, string
-    from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-
-    import nltk
-    from nltk.corpus import stopwords
-    nltk.download('stopwords')
-
-
-    stop = list(stopwords.words('english'))
-    stop.extend(['yukun','yukun yang','yang','data','scientist'])
-
-    def extract_text(text_list):
-        
-        tags=[component[0] for component in text_list]
-        
-        real_content=None
-        if 'text/html' in tags:
-            ind=[component[0] for component in text_list].index('text/html')
-            real_content=text_list[ind][-1]
-            if real_content=='None':
-                real_content=None
-
-        elif 'text/plain' in tags:
-            ind=[component[0] for component in text_list].index('text/plain')
-            real_content=text_list[ind][-1]
-        elif 'NA' in tags:
-            ind=[component[0] for component in text_list].index('NA')
-            real_content=text_list[ind][-1]
-        
-        if (real_content is not None):
-                if len(real_content)>10000:
-                    real_content=None
-        
-        return real_content
-    
-            
-    def clean_text(text):
-        
-        if text is not None:
-        
-            text=re.sub('=\n', '', text) 
-
-            text=re.sub('\S*@\S*\s?', '',  text)
-
-            text=' '.join(word.strip(string.punctuation) for word in text.split())
-
-            text=re.sub(r'((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*', '', text, flags=re.MULTILINE)
-
-        #     text=re.sub(r'\..*\..* ?', '', text, flags=re.MULTILINE)
-
-            text=re.sub(r"\d+", "", text)
-
-            text=re.sub(r"={1}.{2}", "", text)
-            
-            text=text.replace('size','').replace('text size', '').replace('adjust','').replace('td','')
-            
-            
-            
-            return text
-        else:
-            return None
-
-
-# In[16]:
-
-
-    email_df['extracted']=email_df.text.apply(extract_text)
-    email_df['cleaned']=email_df.extracted.apply(clean_text)
-
-
-    import gensim
-    import spacy
-    def sent_to_words(sentences):
-        for sentence in sentences:
-            yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
-    def remove_stopwords(texts):
-
-        new_docs=[]
-        for doc in texts:
-            new_docs.append([word for word in doc if word not in stop])
-        return new_docs    
-        
-
-    def make_bigrams(texts):
-        return [bigram_mod[doc] for doc in texts]
-
-    def make_trigrams(texts):
-        return [trigram_mod[bigram_mod[doc]] for doc in texts]
-
-    def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
-        """https://spacy.io/api/annotation"""
-        texts_out = []
-        for sent in texts:
-            doc = nlp(" ".join(sent)) 
-            texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
-        return texts_out
-
-
-
-    data=email_df[email_df.cleaned.notna()].cleaned.values.tolist()
-
-
-    # In[27]:
-
-
-    data_words = list(sent_to_words(data))
-
-
-    # In[28]:
-
-
-    bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
-    trigram = gensim.models.Phrases(bigram[data_words], threshold=100)  
-
-    bigram_mod = gensim.models.phrases.Phraser(bigram)
-    trigram_mod = gensim.models.phrases.Phraser(trigram)
-
-
-    # In[29]:
-
-
-    # Remove Stop Words
-    data_words_nostops = remove_stopwords(data_words)
-
-    # Form Bigrams
-    data_words_bigrams = make_bigrams(data_words_nostops)
-
-
-    # In[30]:
-
-    try:
-        nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
-    except:
-        import en_core_web_sm
-        nlp = en_core_web_sm.load()
-
-    # Do lemmatization keeping only noun, adj, vb, adv
-    data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
-
-    # print(data_lemmatized[:1])
-
-
-    # In[31]:
-
-
-    import gensim
-    import gensim.corpora as corpora
-    from gensim.utils import simple_preprocess
-    from gensim.models import CoherenceModel
-    # Create Dictionary
-    id2word = corpora.Dictionary(data_lemmatized)
-
-    # Create Corpus
-    texts = data_lemmatized
-
-    # Term Document Frequency
-    corpus = [id2word.doc2bow(text) for text in texts]
-
-
-    def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=3):
-        """
-        Compute c_v coherence for various number of topics
-
-        Parameters:
-        ----------
-        dictionary : Gensim dictionary
-        corpus : Gensim corpus
-        texts : List of input texts
-        limit : Max num of topics
-
-        Returns:
-        -------
-        model_list : List of LDA topic models
-        coherence_values : Coherence values corresponding to the LDA model with respective number of topics
-        """
-        coherence_values = []
-        model_list = []
-        for num_topics in range(start, limit, step):
-            model = gensim.models.ldamodel.LdaModel(corpus=corpus, num_topics=num_topics, id2word=id2word,random_state=2020)
-            model_list.append(model)
-            coherencemodel = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='c_v')
-            coherence_values.append(coherencemodel.get_coherence())
-
-        return model_list, coherence_values
-
-
-# In[77]:
-
-
-    model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=2, limit=40, step=2)
-
-
-    # In[78]:
-
-
-    x=range(2,40,2)
-
-
-    # In[79]:
-
-
-    choose_k=pd.DataFrame({'# of Topics':x,'coherence':coherence_values})
-
-    def format_topics_sentences(ldamodel=None, corpus=corpus, texts=data):
-        # Init output
-        sent_topics_df = pd.DataFrame()
-
-        # Get main topic in each document
-        for i, row_list in enumerate(ldamodel[corpus]):
-            row = row_list[0] if ldamodel.per_word_topics else row_list            
-            # print(row)
-            row = sorted(row, key=lambda x: (x[1]), reverse=True)
-            # Get the Dominant topic, Perc Contribution and Keywords for each document
-            for j, (topic_num, prop_topic) in enumerate(row):
-                if j == 0:  # => dominant topic
-                    wp = ldamodel.show_topic(topic_num)
-                    topic_keywords = ", ".join([word for word, prop in wp])
-                    sent_topics_df = sent_topics_df.append(pd.Series([int(topic_num), round(prop_topic,4), topic_keywords]), ignore_index=True)
-                else:
-                    break
-        sent_topics_df.columns = ['Dominant_Topic', 'Perc_Contribution', 'Topic_Keywords']
-
-        # Add original text to the end of the output
-        contents = pd.Series(texts)
-        sent_topics_df = pd.concat([sent_topics_df, contents], axis=1)
-        return(sent_topics_df)
-
-
 
     app.run_server()
 
@@ -1650,71 +1579,35 @@ if __name__ == '__main__':
 # In[ ]:
 
 
-
+# In[ ]:
 
 
 # In[ ]:
 
 
-
+# In[ ]:
 
 
 # In[ ]:
 
 
-
+# In[ ]:
 
 
 # In[ ]:
 
 
-
+# In[ ]:
 
 
 # In[ ]:
 
 
-
+# In[ ]:
 
 
 # In[ ]:
 
 
-
-
-
 # In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
