@@ -76,7 +76,7 @@ corpus=pickle.load(open('corpus.pickle', 'rb'))
 id2word=pickle.load(open('id2word.pickle', 'rb'))
 texts=pickle.load(open('texts.pickle', 'rb'))
 
-
+tsne_ls=pickle.load(open('tsne_ls.pickle', 'rb'))
 # %%
 
 email_df['date_n']=pd.to_datetime(email_df.date)
@@ -1077,32 +1077,35 @@ def change_of_k(k):
                         color='Count', title='Monthly Topic Distribution', color_continuous_scale=px.colors.sequential.Blues)
         polar.update(layout=dict(title=dict(x=0.5)))
         sun.update(layout=dict(title=dict(x=0.5)))
-        from sklearn.manifold import TSNE
-        topic_weights = []
+        # from sklearn.manifold import TSNE
+        # topic_weights = []
 
-        topic_weights = pd.DataFrame()
+        # topic_weights = pd.DataFrame()
 
-        for i, row_list in enumerate(lda_model[corpus]):
-            #     print(i,row_list)
-            for j in row_list:
-                topic_weights.loc[i, j[0]] = j[-1]
-        #     topic_weights.append([row_list[0][-1]])
+        # for i, row_list in enumerate(lda_model[corpus]):
+        #     #     print(i,row_list)
+        #     for j in row_list:
+        #         topic_weights.loc[i, j[0]] = j[-1]
+        # #     topic_weights.append([row_list[0][-1]])
 
-        arr = topic_weights.fillna(0).values
-        topic_num = np.argmax(arr, axis=1)
+        # arr = topic_weights.fillna(0).values
+        # topic_num = np.argmax(arr, axis=1)
 
-        # tSNE Dimension Reduction
-        tsne_model = TSNE(n_components=2, verbose=1,
-                        random_state=0, angle=.99, init='pca')
-        tsne_lda = tsne_model.fit_transform(arr)
+        # # tSNE Dimension Reduction
+        # tsne_model = TSNE(n_components=2, verbose=1,
+        #                 random_state=0, angle=.99, init='pca')
+        # tsne_lda = tsne_model.fit_transform(arr)
 
-        tsne_df = pd.DataFrame(tsne_lda)
-        tsne_df = tsne_df.rename(columns={0: 'x', 1: 'y'})
-        tsne_df['Dominant_Topic'] = topic_num
-        tsne_df = pd.merge(left=tsne_df, right=df_dominant_topic,
-                        left_on='Dominant_Topic', right_on='Dominant_Topic')
-        tsne_df['Dominant_Topic'] = tsne_df['Dominant_Topic'].apply(
-            lambda x: 'Topic'+str(x))
+        # tsne_df = pd.DataFrame(tsne_lda)
+        # tsne_df = tsne_df.rename(columns={0: 'x', 1: 'y'})
+        # tsne_df['Dominant_Topic'] = topic_num
+        # tsne_df = pd.merge(left=tsne_df, right=df_dominant_topic,
+        #                 left_on='Dominant_Topic', right_on='Dominant_Topic')
+        # tsne_df['Dominant_Topic'] = tsne_df['Dominant_Topic'].apply(
+        #     lambda x: 'Topic'+str(x))
+
+        tsne_df=tsne_ls[int((k-2)/2)]
+
         tsne = px.scatter(tsne_df, x='x', y='y', color='Dominant_Topic',
                         color_discrete_sequence=px.colors.qualitative.Pastel,
                         hover_data=['x', 'y', 'Keywords'])

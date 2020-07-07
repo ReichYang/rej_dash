@@ -188,6 +188,7 @@ class GmailMboxMessage():
                 msg_text = None
             return (content_type, encoding, msg_text)
 
+
 def main():
         
 
@@ -289,6 +290,34 @@ def main():
     choose_k.to_csv("choose_k.csv",index=False)
     email_df.to_csv("email_to_df.csv", index=False)
 
+
+    def format_topics_sentences(ldamodel=None, corpus=corpus, texts=texts):
+                # Init output
+                sent_topics_df = pd.DataFrame()
+
+                # Get main topic in each document
+                for i, row_list in enumerate(ldamodel[corpus]):
+                    row = row_list[0] if ldamodel.per_word_topics else row_list
+                    # print(row)
+                    row = sorted(row, key=lambda x: (x[1]), reverse=True)
+                    # Get the Dominant topic, Perc Contribution and Keywords for each document
+                    for j, (topic_num, prop_topic) in enumerate(row):
+                        if j == 0:  # => dominant topic
+                            wp = ldamodel.show_topic(topic_num)
+                            topic_keywords = ", ".join([word for word, prop in wp])
+                            sent_topics_df = sent_topics_df.append(pd.Series(
+                                [int(topic_num), round(prop_topic, 4), topic_keywords]), ignore_index=True)
+                        else:
+                            break
+                sent_topics_df.columns = ['Dominant_Topic',
+                                        'Perc_Contribution', 'Topic_Keywords']
+
+                # Add original text to the end of the output
+                contents = pd.Series(texts)
+                sent_topics_df = pd.concat([sent_topics_df, contents], axis=1)
+                return(sent_topics_df)
+    
+
     import pickle
     with open('model_list.pickle', 'wb') as b:
         pickle.dump(model_list,b)
@@ -302,7 +331,52 @@ def main():
     with open('corpus.pickle', 'wb') as b:
         pickle.dump(corpus,b)
     
+    from sklearn.manifold import TSNE
+    tsne_ls=[]
+    for lda_model in model_list:
+        df_topic_sents_keywords = format_topics_sentences(
+            ldamodel=lda_model, corpus=corpus, texts=texts)
 
+        # Format
+        df_dominant_topic = df_topic_sents_keywords.reset_index()
+
+        df_dominant_topic.columns = [
+            'Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
+
+        topic_weights = []
+
+        topic_weights = pd.DataFrame()
+
+        for i, row_list in enumerate(lda_model[corpus]):
+            #     print(i,row_list)
+            for j in row_list:
+                topic_weights.loc[i, j[0]] = j[-1]
+        #     topic_weights.append([row_list[0][-1]])
+
+        arr = topic_weights.fillna(0).values
+        topic_num = np.argmax(arr, axis=1)
+
+        # tSNE Dimension Reduction
+        tsne_model = TSNE(n_components=2, verbose=1,
+                        random_state=0, angle=.99, init='pca')
+        tsne_lda = tsne_model.fit_transform(arr)
+
+        tsne_df = pd.DataFrame(tsne_lda)
+        tsne_df = tsne_df.rename(columns={0: 'x', 1: 'y'})
+        tsne_df['Dominant_Topic'] = topic_num
+        tsne_df = pd.merge(left=tsne_df, right=df_dominant_topic,
+                        left_on='Dominant_Topic', right_on='Dominant_Topic')
+        tsne_df['Dominant_Topic'] = tsne_df['Dominant_Topic'].apply(
+            lambda x: 'Topic'+str(x))
+
+        tsne_ls.append(tsne_df)
+        # tsne = px.scatter(tsne_df, x='x', y='y', color='Dominant_Topic',
+        #                 color_discrete_sequence=px.colors.qualitative.Pastel,
+        #                 hover_data=['x', 'y', 'Keywords'])
+
+
+    with open('tsne_ls.pickle', 'wb') as b:
+        pickle.dump(tsne_ls,b)
 if __name__ == '__main__':
     main()
     # choose_k.to_csv("choose_k.csv",index=False)

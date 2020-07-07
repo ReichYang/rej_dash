@@ -39,6 +39,9 @@ from nltk.corpus import stopwords
 nltk.download('stopwords', quiet=True)
 import email_pro
 
+nltk.download('stopwords')
+stop = list(stopwords.words('english'))
+stop.extend(['yukun','yukun yang','yang','data','scientist'])
 
 email_df= pd.read_csv("email_to_df.csv")
 
@@ -69,20 +72,8 @@ corpus = [id2word.doc2bow(text) for text in texts]
 
 
 
-    # In[77]:
-model_list, coherence_values = compute_coherence_values(
-                dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=2, limit=40, step=2)
 
-            # In[78]:
-
-x = range(2, 40, 2)
-
-            # In[79]:
-
-choose_k = pd.DataFrame(
-                {'# of Topics': x, 'coherence': coherence_values})
-
-def format_topics_sentences(ldamodel=None, corpus=corpus, texts=data):
+def format_topics_sentences(ldamodel=None, corpus=corpus):
                 # Init output
                 sent_topics_df = pd.DataFrame()
 
@@ -104,12 +95,12 @@ def format_topics_sentences(ldamodel=None, corpus=corpus, texts=data):
                                         'Perc_Contribution', 'Topic_Keywords']
 
                 # Add original text to the end of the output
-                contents = pd.Series(texts)
+                # contents = pd.Series(texts)
                 sent_topics_df = pd.concat([sent_topics_df, contents], axis=1)
                 return(sent_topics_df)
 
 
-def important_words(metric, ranks):
+def important_words(metric, ranks, stop):
         #     stop = list(stopwords.words('english'))
         #     stop.extend(['yukun','yukun yang','yang','data','scientist'])
 
@@ -228,41 +219,9 @@ def make_circos(test_co):
         )
 
 
-    # In[25]:
+ 
+#Define all functions for the app
 
-
-    # View
-    # print(corpus[:1])
-
-
-    # In[32]:
-
-
-    # In[ ]:
-
-
-    # In[40]:
-
-
-
-    # df_topic_sents_keywords = format_topics_sentences(ldamodel=lda_model, corpus=corpus, texts=data_lemmatized)
-
-    # # Format
-    # df_dominant_topic = df_topic_sents_keywords.reset_index()
-    # df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
-    # df_dominant_topic.head(10)
-
-
-    # In[ ]:
-
-
-    # # Define all functions for the app
-
-    # In[ ]:
-
-
-
-    # In[81]:
 
 
 def intro():
