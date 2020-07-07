@@ -33,23 +33,11 @@ from nltk.collocations import *
 import nltk
 import mailbox
 import email.utils
-import pickle 
-
-import matplotlib
-matplotlib.use('Agg')
 
 import nltk
 from nltk.corpus import stopwords
-
-
-
-
-# %%
-
 nltk.download('stopwords', quiet=True)
-stop = list(stopwords.words('english'))
-stop.extend(['yukun','yukun yang','yang','data','scientist'])
-
+import email_pro
 
 
 email_df= pd.read_csv("email_to_df.csv")
@@ -65,34 +53,36 @@ day_list = [
             ]
 
 
-# %%
-model_list=pickle.load(open('model_list.pickle', 'rb'))
+
+import gensim
+import gensim.corpora as corpora
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
+            # Create Dictionary
+id2word = corpora.Dictionary(data_lemmatized)
+
+            # Create Corpus
+texts = data_lemmatized
+
+            # Term Document Frequency
+corpus = [id2word.doc2bow(text) for text in texts]
+
+
+
+    # In[77]:
+model_list, coherence_values = compute_coherence_values(
+                dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=2, limit=40, step=2)
+
+            # In[78]:
+
 x = range(2, 40, 2)
-choose_k= pd.read_csv('choose_k.csv')
 
+            # In[79]:
 
-# %%
-corpus=pickle.load(open('corpus.pickle', 'rb'))
-id2word=pickle.load(open('id2word.pickle', 'rb'))
-texts=pickle.load(open('texts.pickle', 'rb'))
+choose_k = pd.DataFrame(
+                {'# of Topics': x, 'coherence': coherence_values})
 
-
-# %%
-
-email_df['date_n']=pd.to_datetime(email_df.date)
-
-email_df['date_es']=email_df['date_n'].apply(lambda x: x.astimezone(timezone('US/Eastern')))
-
-
-email_df['weekdays']=email_df.date_es.apply(lambda x: dt.strftime(x, "%A"))
-
-email_df['hour']=email_df.date_es.apply(
-        lambda x: dt.strftime(x, "%I %p")
-    ) 
-
-
-# %%
-def format_topics_sentences(ldamodel=None, corpus=corpus, texts=texts):
+def format_topics_sentences(ldamodel=None, corpus=corpus, texts=data):
                 # Init output
                 sent_topics_df = pd.DataFrame()
 
@@ -119,7 +109,7 @@ def format_topics_sentences(ldamodel=None, corpus=corpus, texts=texts):
                 return(sent_topics_df)
 
 
-def important_words(metric, ranks, stop=stop):
+def important_words(metric, ranks):
         #     stop = list(stopwords.words('english'))
         #     stop.extend(['yukun','yukun yang','yang','data','scientist'])
 
@@ -238,9 +228,41 @@ def make_circos(test_co):
         )
 
 
- 
-#Define all functions for the app
+    # In[25]:
 
+
+    # View
+    # print(corpus[:1])
+
+
+    # In[32]:
+
+
+    # In[ ]:
+
+
+    # In[40]:
+
+
+
+    # df_topic_sents_keywords = format_topics_sentences(ldamodel=lda_model, corpus=corpus, texts=data_lemmatized)
+
+    # # Format
+    # df_dominant_topic = df_topic_sents_keywords.reset_index()
+    # df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
+    # df_dominant_topic.head(10)
+
+
+    # In[ ]:
+
+
+    # # Define all functions for the app
+
+    # In[ ]:
+
+
+
+    # In[81]:
 
 
 def intro():
@@ -631,7 +653,7 @@ def seperate(f):
 
         original_f.add_traces([i for i in cop_f['data']])
 
-        original_f.update_layout({'height': 400,'width':900})
+        original_f.update_layout({'height': 400})
     #     original_f.layout.margin['l']=25
         original_f.layout.margin = {
             'b': 50, 'l': 25, 'r': 30, 't': 50
@@ -681,19 +703,20 @@ def seperate(f):
 def cal_slider(start_date, end_date):
         start_value = (dt.strptime(start_date, "%Y-%m-%d") -
                     (email_df['date_es'].min().tz_convert(None))).days+1
-        time_delta = (dt.strptime(end_date, "%Y-%m-%d")) -             (dt.strptime(start_date, "%Y-%m-%d"))
+        time_delta = (dt.strptime(end_date, "%Y-%m-%d")) - \
+            (dt.strptime(start_date, "%Y-%m-%d"))
         end_value = time_delta.days
         return [start_value, start_value+end_value]
 
 
 def cal_range(value):
         start_value, end_value = value
-        start_date = email_df['date_es'].min().date() +             datetime.timedelta(start_value)
+        start_date = email_df['date_es'].min().date() + \
+            datetime.timedelta(start_value)
         end_date = start_date+datetime.timedelta(end_value)
         return start_date, end_date
 
 
-# %%
 app = dash.Dash(__name__, external_stylesheets=["https://codepen.io/chriddyp/pen/bWLwgP.css",
                                                     "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
     # app = JupyterDash(__name__,external_stylesheets=["https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
@@ -852,7 +875,7 @@ app.layout = html.Div(
                 html.Br(),
                 html.Br(),
                 html.Br(),
-                html.Div(className='nine columns', style={'width':"70%"},children=dcc.Loading(
+                html.Div(className='nine columns', children=dcc.Loading(
                     dcc.Graph(id='processline'))),
                 html.Div(className='three columns container', children=[
                     html.Div(className='container', children=[html.Div(
@@ -1043,7 +1066,7 @@ def change_of_k(k):
         lda_model = model_list[int((k-2)/2)]
 
         df_topic_sents_keywords = format_topics_sentences(
-            ldamodel=lda_model, corpus=corpus, texts=texts)
+            ldamodel=lda_model, corpus=corpus, texts=data_lemmatized)
 
         # Format
         df_dominant_topic = df_topic_sents_keywords.reset_index()
@@ -1253,21 +1276,43 @@ def update_output_from_picker(start_date, end_date, weekdays, time, click):
                 generate_paco(filtered))
 
 
-# %%
-
 if __name__ == '__main__':
-
-    app.run_server(port=800)
-
-
-# %%
+    main()
+    app.run_server(port=8050,debug=True)
 
 
-
-# %%
-
+# In[ ]:
 
 
-# %%
+# In[ ]:
 
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
 
