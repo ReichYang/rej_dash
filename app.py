@@ -698,6 +698,7 @@ app = dash.Dash(__name__, external_stylesheets=["https://codepen.io/chriddyp/pen
                                                     "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
     # app = JupyterDash(__name__,external_stylesheets=["https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
 server = app.server
+app.title = "Yukun's Visual Analytics of Rej Letters"
 
 app.layout = html.Div(
         id="app-container",
