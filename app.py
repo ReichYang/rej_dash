@@ -17,6 +17,7 @@ import dash_bio as dashbio
 import dash_table
 from dash import no_update
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_core_components as dcc
 from jupyter_dash import JupyterDash
@@ -265,11 +266,13 @@ def intro():
                 html.Br(),
                 html.H4('Instructions'),
                 html.Div(children=[
-                    html.P("This dashboard enables multiple ways for you to interact with the plots. Every plot can be zoomed and selected, along with hovering tooltips. Despite these basics, it also supports the following interactions:"),
+                    html.P("This dashboard enables multiple ways for you to interact with the plots. Every plot can be zoomed and selected, along with hovering tooltips. \
+                        Despite these basics, it also supports other kinds of user inputs and interactions. Pleaase put your mouse on the ",style={"display":"inline"}),
+                        html.I(className="fas fa-question-circle fa-lg", style={"display":"inline"}),
+                        html.P(' icon aside the title of each section to get more information. For this section, it supports the following interactions:',style={"display":"inline"}),
                     html.Li(
                         'Subsetting the dataset by selecting the time range, the weekdays, and the hours.'),
-                    html.Li('Showing specific data entries by clicking on the Heatmap.'),
-                    html.Div('Other interaction options are detailed in the corresponding part')])
+                    html.Li('Showing specific data entries by clicking on the Heatmap.')])
                 #                 html.Li(
                 #                     'Change the Solver of the Temporal Process and the number of days to prdict.'),
                 #                 html.Li('Change the metric to rank the important terms, and the number of topics to model.')])
@@ -666,7 +669,7 @@ def seperate(f):
         original_f['data'][3]['name'] = 'Predicted Events'
 
         original_f.layout['title'] = {'font': {'color': 'rgb(87, 145, 203)', 'size': 17},
-                                    'text': 'Hawekes Modelling Results', 'xanchor': 'center',
+                                    'text': 'Hawkes Modelling Results', 'xanchor': 'center',
                                     'yanchor': 'top', 'x': 0.5}
         original_f.layout.margin.l = 30
     #     original_f.layout.width=1000
@@ -695,7 +698,9 @@ def cal_range(value):
 
 # %%
 app = dash.Dash(__name__, external_stylesheets=["https://codepen.io/chriddyp/pen/bWLwgP.css",
-                                                    "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
+                                                    "https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0",
+                                                    
+                                                    "https://use.fontawesome.com/releases/v5.10.2/css/all.css"])
     # app = JupyterDash(__name__,external_stylesheets=["https://dash-gallery.plotly.host/dash-oil-and-gas/assets/styles.css?m=1590087908.0"])
 server = app.server
 app.title = "Yukun's Visual Analytics of Rej Letters"
@@ -799,25 +804,49 @@ app.layout = html.Div(
                     ],
                 )]),
             html.Div(id='para', className="columns pretty_container", children=[
-                html.H5('Parallel Coordinates of the Flow of Rej. Emails.'),
+                html.Div(style= {"display": "inline-flex"},children=[html.H5('Parallel Coordinates of the Flow of Rej. Emails.'),
+                html.Div(children=
+                        [
+                            html.I(className="fas fa-question-circle fa-lg", id="target"),
+                            dbc.Tooltip("How do we read this? Bascially, each ploly line represents a combination of day/time patterns, and the color indicates the frequency of this pattern.\
+                                Each variable in the data set is represented by a column of rectangles, \
+                                where each rectangle corresponds to a discrete value taken on by that variable.\
+                                     The relative heights of the rectangles reflect the relative\
+                                          frequency of occurrence of the corresponding value. ", target="target",
+                                          style={"max-width":"400px","padding":".25rem .5rem","color":"#fff","text-align":"center","background-color":"#000","border-radius":".25rem"}),
+                        ],
+                        className="p-5 text-muted"
+                    )]),
+     
                 html.Div("Let's highlight the most prominent streamline of the email flow. \
                         It could come in handy when we observed some trends in the data. \
-                This plot will update automatically with the Date/Day/Hour you selected in the Control widgets.",
+                This plot will update automatically with the Date/Day/Hour you selected in the Control widgets. ☝️",
                         style={'margin': "10px"}),
                 dcc.Graph(id='paco')]
             ),
             html.Div(id='temperal pro', className='columns pretty_container', children=[
-
-                html.H5("Temporal Process Analytics",
+                                html.Div(style= {"display": "inline-flex"},children=[
+                                    html.H5("Temporal Process Analytics",
                         style={'margin-left': '10px'}),
+                html.Div(children=
+                        [
+                            html.I(className="fas fa-question-circle fa-lg", id="target2"),
+                            dbc.Tooltip("How can we interact with this? 1) Changing the kernel of the model to see the other kind of results; \n 2)\
+                                Selecting how many days you want to use to predict future email events;\n 3)\
+                                    Showing the actual predicted result by hover on the dots in the line chart.", target="target2",
+                                    style={"max-width":"400px","padding":".25rem .5rem","color":"#fff","text-align":"center","background-color":"#000","border-radius":".25rem"}),
+                        ],
+                        className="p-5 text-muted"
+                    )]),
+                
                 html.P(
                     children="A Temporal Process is a kind of random process whose realization consists of discrete events \
                     localized in time. Compared with \
                     traditional Time-Seris, each data entry was allocated in different time interval. The scattering nature of receiving\
                     an email fits better with a Temporal Process Analysis. \n \
-                    A very popular kind of termporal process is the Haweks process, which could be consider\
-                    as an 'auto-regression' type of process. Here I used the Haweks Process to simulate the events.\
-                    You can select the Kernal and the days to forecast below.",
+                    A very popular kind of termporal process is the Hawkes process, which could be consider\
+                    as an 'auto-regression' type of process. Here I used the Hawkes Process to simulate the events.\
+                    You can select the Kernal and the days to forecast below.👇",
                     style={'margin': '10px'}
                 ),
                 html.Div(
@@ -885,12 +914,26 @@ app.layout = html.Div(
             ]),
 
             html.Div(className='columns mini_container', children=[
-                html.H5("Email Content Analysis", style={'margin': '10px'}),
+                html.Div(style= {"display": "inline-flex"},children=[
+                                   html.H5("Email Content Analysis", style={'margin': '10px'}),
+                html.Div(children=
+                        [
+                            html.I(className="fas fa-question-circle fa-lg", id="target3"),
+                            dbc.Tooltip("How can we interact with this? 1) Selecting the metric for ranking important terms; \n 2)\
+                                Selecting how many important terms to show; \n 3)\
+                                    Choosing the metric to mine interesting word collocations.\n Note that the left part of this section\
+                                        and the right part of this section is seperated, which means their interactions would not\
+                                            influence each other as well.", target="target3",style={"max-width":"400px","padding":".25rem .5rem","color":"#fff","text-align":"center","background-color":"#000","border-radius":".25rem"}),
+                        ],
+                        className="p-5 text-muted"
+                    )]),
+                
+            
                 html.Div("After cleaning the text of the emails, we can find out what words or phrases are the important or interesting .\
                 I provided two commonly used metrics for you to rank the words/phrases. On the right panel, I have tried to present you with\
                 the interesting bigrams, a.k.a. word collocations. Feel free to change the metric to see \
                 which words are connected.", style={'margin': '10px'}),
-                html.P('P.S. It might take a long time for the left graph to show up.', style={
+                html.P('P.S. It might take a long time for the graphs on the left side to show up. ⌛', style={
                     'margin': '10px'}),
                 html.Div(id='phrase', className='six columns',
                         style={'text-align': 'center'},
@@ -970,7 +1013,21 @@ app.layout = html.Div(
                                                 style={
                                                     'width': "70%",
                                                     'margin': "30px"},
-                                                children=[html.H5('Topic Modelling'), html.Br(), html.Blockquote('We can further \
+                                                children=[html.Div(style= {"display": "inline-flex"},children=[
+                                   html.H5("Topic Modelling", style={'margin': '10px'}),
+                html.Div(children=
+                        [
+                            html.I(className="fas fa-question-circle fa-lg", id="target4"),
+                            dbc.Tooltip("How can we interact with this? By clicking the dots in the line plot, the number of topics\
+                                for the model to generate will change, and then every other plots in this section will change automatically.", target="target4",
+                                style={"max-width":"400px","padding":".25rem .5rem","color":"#fff","text-align":"center","background-color":"#000","border-radius":".25rem"}),
+                        ],
+                        className="p-5 text-muted"
+                    )]),
+                                                
+                                                
+                                                
+                                                html.Br(), html.Blockquote('We can further \
                                                 explore what these emails are mainly talking about by applying topic modeling techniques to \
                 the texts. To achieve the best results, the texts were cleaned by removing extra elements(like HTML tags), punctuations, and numbers.\
                 The stopwords are removed as well. I used the NLTK stopword collection and extended it with other self-defined words, like my name😂. \
