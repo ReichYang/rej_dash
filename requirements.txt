@@ -20,4 +20,4 @@ dash_bootstrap_components
 gunicorn
 html5lib
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.0/en_core_web_sm-2.2.0.tar.gz
-Werkzeug==2.1.0ß
+Werkzeug==2.1.0
