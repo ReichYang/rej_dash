@@ -1,7 +1,7 @@
 jupyter_dash==0.2.1.
 gensim==3.8.1
 pandas==1.0.3
-dash==1.13.3
+dash
 numpy==1.18.1
 dash_table==4.8.1
 lexicalrichness==0.1.3
